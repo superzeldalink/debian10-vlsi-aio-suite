@@ -6,4 +6,4 @@ v1.15 - 220923: Added info GUI (auto start)
 v1.20 - 230923: Added support for x86_64 machines (add 'amd64' when running the container)
 v1.21 - 230923: Added vim, nvim
 v1.25 - 250923: Added ssh, vnc
-v1.26 - 021023: Updated ModelSim 13.1 to fix Itcl issue; Unlimited scroll for XFCE Terminal
+v1.26 - 021023: Updated ModelSim 18.1 to fix Itcl issue; Unlimited scroll for XFCE Terminal
