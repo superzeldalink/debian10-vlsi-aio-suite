@@ -137,3 +137,6 @@ docker run -it -d --name rtl-suite \
 ```
 
 After running one of these commands, the container named `rtl-suite` will be started with the specified mode. You can access the container based on the chosen mode as described in the README file.
+
+##### Notes
+- The image is optimized for Apple Silicon Macs by default. If you are running this on the x86_64 machines, add `amd64` to the `docker run` command.
