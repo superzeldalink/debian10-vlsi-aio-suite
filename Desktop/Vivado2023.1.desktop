@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Vivado 2023.1
+Comment=Vivado 2023.1
+Icon=/tools/Xilinx/Vivado/2023.1/doc/images/vivado_logo.png
+Exec=taskset -c 0-3 /tools/Xilinx/Vivado/2023.1/bin/vivado 
+Path=/media/share
+Terminal=false
+StartupNotify=false

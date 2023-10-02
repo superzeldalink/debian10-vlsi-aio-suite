@@ -1,0 +1,13 @@
+#%Module1.0
+## Environment module for Xilinx Vivado and Vitis
+
+prepend-path PATH /tools/Xilinx/Vivado/2023.1/bin
+prepend-path PATH /tools/Xilinx/Vitis_HLS/2023.1/bin
+
+# Define Vivado and Vitis aliases
+set-alias vivado "taskset -c 0-3 vivado"
+set-alias vitis "taskset -c 4-7 vitis_hls"
+set-alias docnav "/tools/Xilinx/DocNav/docnav --no-sandbox"
+
+# Module description
+module-whatis "Environment module for Xilinx Vivado and Vitis"

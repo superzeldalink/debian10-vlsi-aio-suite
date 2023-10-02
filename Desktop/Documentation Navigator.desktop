@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Documentation Navigator
+Comment=Documentation Navigator
+Icon=/tools/Xilinx/DocNav/resources/doc_nav_application_48.png
+Exec=/tools/Xilinx/DocNav/docnav --no-sandbox
+Path=/tools/Xilinx/DocNav
+Terminal=false
+StartupNotify=false

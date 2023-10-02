@@ -1,0 +1,36 @@
+#%Module1.0
+## Environment module for Synopsys tools
+
+# Set the license file location
+setenv LM_LICENSE_FILE 27000@127.0.0.1
+
+# Define Synopsys tool installation directories
+setenv SYNOPSYS_HOME /usr/synopsys
+setenv VC_STATIC_HOME /usr/synopsys/vc_static-O-2018.09-SP2-2
+setenv VCS_HOME /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/
+setenv SYNOPSYS /usr/synopsys/fm-O-2018.06-SP1/
+setenv VERDI_HOME /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi
+
+# Set architecture-related variables
+setenv VCS_ARCH_OVERRIDE linux
+setenv VCS_TARGET_ARCH amd64
+
+setenv TERM xterm
+
+# Update the PATH environment variable
+prepend-path PATH /usr/synopsys/cx-K-2015.06/bin/
+prepend-path PATH /usr/synopsys/hspice-L-2016.06/hspice/bin/
+prepend-path PATH /usr/synopsys/lc-M-2016.12/linux64/syn/bin
+prepend-path PATH /usr/synopsys/icc-L-2016.03-SP1/amd64/syn/bin
+prepend-path PATH /usr/synopsys/fm-O-2018.06-SP1/linux64/fm/bin
+prepend-path PATH /usr/synopsys/pt-M-2016.12-SP1/amd64/syn/bin
+prepend-path PATH /usr/synopsys/dc-L-2016.03-SP1/amd64/syn/bin
+prepend-path PATH /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/bin
+prepend-path PATH /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/bin
+prepend-path PATH /usr/synopsys/vc_static-O-2018.09-SP2-2/bin
+
+# Create an alias
+set-alias dv "design_vision"
+
+# Module description
+module-whatis "Environment module for Synopsys tools"

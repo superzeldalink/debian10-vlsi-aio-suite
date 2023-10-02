@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Vitis HLS 2023.1
+Comment=Vitis HLS 2023.1
+Icon=/tools/Xilinx/Vitis_HLS/2023.1/doc/images/vitis_hls_icon.png
+Exec=taskset -c 4-7 /tools/Xilinx/Vitis_HLS/2023.1/bin/vitis_hls 
+Path=/media/share
+Terminal=false
+StartupNotify=false

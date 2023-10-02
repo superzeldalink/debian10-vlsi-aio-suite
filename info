@@ -1,0 +1,73 @@
+#!/bin/bash
+
+KEY=$RANDOM
+
+updatenotes="v1.00 - 190923: Init version
+v1.01 - 200923: Fixed hostname, any hostname is ok
+v1.02 - 200923: Added Firefox (bc Chromium is very slow)
+v1.10 - 210923: Added modules, Quartus II (launch ModelSim from Quartus not working)
+v1.15 - 220923: Added info GUI (auto start)
+v1.20 - 230923: Added support for x86_64 machines (add 'amd64' when running the container)
+v1.21 - 230923: Added vim, nvim
+v1.25 - 250923: Added ssh, vnc
+v1.26 - 021023: Updated ModelSim 13.1 to fix Itcl issue; Unlimited scroll for XFCE Terminal"
+
+# Define the tool information
+tools=("Quartus Prime + QuestaSim|22.1std|module load quartus/22.1std"
+       "Quartus II + ModelSim|13.0sp1|module load quartus/13.0sp1"
+       "Vivado ML Standard Edition|2023.1|module load vivado"
+       "oss-cad-suite|20230922|module load oss-cad-suite"
+       "      Yosys|0.33+65| "
+       "      Cocotb|1.9.0.dev0| "
+       "      Verilator|5.017| "
+       "      GTKWave|3.4.0| "
+       "      Icarus Verilog|13.0| "
+       "      ...| | "
+       "Synopsys| |module load synopsys"
+       "      Design Compiler|L-2016.03-SP1| "
+       "      VCS MX|O-2018.09-SP2-2| "
+       "      Verdi|O-2018.09-SP2-2| "
+       "      VC Static|O-2018.09-SP2-2| "
+       "      Formality|O-2018.06-SP1| "
+       "      Library Compiler|M-2016.12| "
+       "      PrimeTime|M-2016.12-SP1| "
+       "      IC Compiler|L-2016.03-SP1| "
+       "      HSPICE|L-2016.06-SP1| "
+       "      CustomExplorer|K-2015.06| ")
+
+function show_mod_info {
+  TXT="\\n<span face='Monospace'>$(modinfo $1 | sed 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g')</span>"
+  yad --title="Module information" \
+      --window-icon="application-x-addon" \
+      --button="yad-close" \
+      --width=500 \
+      --image="application-x-addon" --text="$TXT"
+}
+export -f show_mod_info
+
+items=()
+for tool in "${tools[@]}"; do
+  IFS='|' read -r tool_name version module_command <<< "$tool"
+  items+=( "$tool_name" "$version" "$module_command" )
+done
+
+# Tools tab
+yad --plug=$KEY --tabnum=1 \
+    --list --no-selection --column="Tool Name" --column="Version" --column="Module Command" \
+    "${items[@]}" &
+
+# Update Notes tab
+sed -r "s/:[ ]*/\n/" /proc/meminfo |\
+  yad --plug=$KEY --tabnum=2 \
+      --list --no-selection --text="$updatenotes" &
+
+# Main dialog
+TXT="<b>Image information</b>: Debian RTL Suite ;;VERSION build ;;BUILD_NUMBER\\n"
+TXT+="\\tOS: $(lsb_release -ds) on $(hostname)\\n"
+;;BuiltAt
+TXT+="<b>Note:</b> The container is optimized for Apple Silicon Macs.\\n"
+TXT+="           You can reopen this dialog by using <b>info</b> command."
+
+yad --notebook --window-icon="dialog-information" \
+    --width=600 --height=800 --fixed --title="Image Information" --text="$TXT" --button="Thanks" \
+    --key=$KEY --tab="Tools" --tab="Update Notes" --active-tab=${1:-1}
