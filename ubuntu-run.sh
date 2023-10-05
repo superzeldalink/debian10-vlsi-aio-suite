@@ -65,30 +65,7 @@ cp -r /lib/terminfo/* /usr/share/terminfo/ 2> /dev/null
 
 # Loop through all script arguments
 for arg in "$@"; do
-  if [[ "$arg" =~ ^(amd64|x86|x64|x86_64)$ ]]; then
-    # Perform some patches for "amd64"
-    echo "Performing patches for amd64..."
-    
-    # Patch eclipse.ini for Quartus
-    sed -i '/-XX:ActiveProcessorCount=2/d' /opt/intelFPGA/22.1std/nios2eds/bin/eclipse_nios2/eclipse.ini
-
-    # Patch desktop files
-    sed -i 's/taskset -c 0-3 //' /root/Desktop/Vivado2023.1.desktop
-    sed -i 's/taskset -c 4-7 //' /root/Desktop/VitisHLS2023.1.desktop
-    sed -i 's/taskset -c 0-3 //' /root/Desktop/Quartus.desktop
-    sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/vivado
-    sed -i 's/taskset -c 4-7 //' /usr/share/modules/modulefiles/vivado
-    sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/quartus/22.1std
-
-    sed -i 's|Exec=/opt/altera/13.0sp1/quartus/bin/quartus|Exec=/opt/altera/13.0sp1/quartus/bin/quartus --64bit|' /root/Desktop/QuartusII.desktop
-    sed -i 's/(32-bit)/(64-bit)/g' /root/Desktop/QuartusII.desktop
-
-    # Patch modules
-    echo 'set-alias quartus "quartus --64bit"' >> /usr/share/modules/modulefiles/quartus/13.0sp1
-
-    # Patch info
-    sed -i 's/Apple Silicon Macs/x86_64 machines/' /bin/info
-  elif [[ "$arg" =~ ^(vnc=)(.*)$ ]]; then
+  if [[ "$arg" =~ ^(vnc=)(.*)$ ]]; then
     REMOTE_PROTOCOL=vnc
     VNC_RESOLUTION=${BASH_REMATCH[2]}
     echo "Setting resolution to $VNC_RESOLUTION"

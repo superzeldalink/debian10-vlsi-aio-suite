@@ -1,4 +1,16 @@
 # Makefile
+ARCH := $(shell uname -m)
+
+# Set the target architecture based on the detected architecture
+ifeq ($(ARCH),aarch64)
+    TARGET_ARCH := arm64
+else ifeq ($(ARCH),arm64)
+    TARGET_ARCH := arm64
+else ifeq ($(ARCH),x86_64)
+    TARGET_ARCH := amd64
+else
+    $(error Unsupported architecture: $(ARCH))
+endif
 
 # Path to the build file
 BUILD_FILE := version
@@ -16,21 +28,21 @@ update-build-file:
 
 # Build the Docker image with the build number as an argument
 build: update-build-file
-	docker build --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-rdp-rtl-suite:latest .
+	docker build --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-rtl-suite:latest-$(ARCH) .
 
 push:
-	docker push superzeldalink/debian10-rdp-rtl-suite:latest
+	docker push superzeldalink/debian10-rtl-suite:latest-$(ARCH)
 
 stop-container:
 	docker stop rtl-suite || true && docker rm rtl-suite || true
 
 # Run a container from the newly built image
 run: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 3389:3389 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rdp-rtl-suite:latest link
+	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 3389:3389 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(ARCH) link
 run-vnc: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 5900:5900 -p 5901:5901 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rdp-rtl-suite:latest link vnc
+	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 5900:5900 -p 5901:5901 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(ARCH) link vnc
 run-ssh: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 2222:22 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rdp-rtl-suite:latest link ssh
+	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 2222:22 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(ARCH) link ssh
 
 # Default target
 all: build run

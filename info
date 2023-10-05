@@ -10,14 +10,15 @@ v1.15 - 220923: Added info GUI (auto start)
 v1.20 - 230923: Added support for x86_64 machines (add 'amd64' when running the container)
 v1.21 - 230923: Added vim, nvim
 v1.25 - 250923: Added ssh, vnc
-v1.26 - 021023: Updated ModelSim 18.1 to fix Itcl issue; Unlimited scroll for XFCE Terminal"
+v1.26 - 021023: Updated ModelSim 18.1 to fix Itcl issue; Unlimited scroll for XFCE Terminal
+v1.30 - 061023: Updated multi-arch images"
 
 # Define the tool information
 tools=("Quartus Prime + QuestaSim|22.1std|module load quartus/22.1std"
        "Quartus II + ModelSim|13.0sp1|module load quartus/13.0sp1"
        "Vivado ML Standard Edition|2023.1|module load vivado"
-       "oss-cad-suite|20230922|module load oss-cad-suite"
-       "      Yosys|0.33+65| "
+       "oss-cad-suite|20231005|module load oss-cad-suite"
+       "      Yosys|0.33+112k| "
        "      Cocotb|1.9.0.dev0| "
        "      Verilator|5.017| "
        "      GTKWave|3.4.0| "
