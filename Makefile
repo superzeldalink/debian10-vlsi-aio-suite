@@ -28,7 +28,7 @@ update-build-file:
 
 # Build the Docker image with the build number as an argument
 build: update-build-file
-	docker build --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-rtl-suite:latest-$(ARCH) .
+	docker build --build-arg="TARGETARCH=$(ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-rtl-suite:latest-$(ARCH) .
 
 push:
 	docker push superzeldalink/debian10-rtl-suite:latest-$(ARCH)

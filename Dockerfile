@@ -4,13 +4,15 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ARG VERSION=v1.0
 ARG BUILD_NUMBER=0
+ARG TARGETARCH
+
 ### COMMON
 ADD quartus_22.1std.tgz /opt
 ADD synopsys.tgz /usr
 ADD vivado.tgz /tools
 ADD quartus_13.tgz /opt
+ADD oss-cad-suite-linux-${TARGETARCH}-20231005.tgz /tools
 
-FROM tools-base AS base
 RUN dpkg --add-architecture amd64 \
     && dpkg --add-architecture i386
 RUN apt -y update && apt -y upgrade
@@ -35,10 +37,10 @@ RUN apt install -y --no-install-recommends gcc make libc6-dev g++
 # Install Firefox
 RUN apt install -y firefox-esr
 
-# Install additional utilities
-RUN apt install -y htop nano vim neovim tree locales mousepad git xterm tcl yad environment-modules 
-
+# Install additional utilities and locales
 RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+RUN apt install -y htop nano vim neovim tree locales mousepad git xterm tcl yad environment-modules 
 
 # INSTALL QUARTUS
 # Install dependencies
@@ -126,42 +128,34 @@ RUN echo 'root:toor' | chpasswd
 RUN rm -rf /var/cache/apt /var/lib/apt/lists
 RUN rm -rf /tmp/*
 
+## This stage is used on arm64"
+RUN if [ "${TARGETARCH}" = "arm64" ]; then \
+        ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/aarch64; \
+        ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/platform/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/platform/aarch64; \
+        ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/aarch64; \
+        ln -s /usr/synopsys/dc-L-2016.03-SP1/linux64 /usr/synopsys/dc-L-2016.03-SP1/linux; \
+        ln -s /usr/synopsys/hspice-L-2016.06/hspice/linux64 /usr/synopsys/hspice-L-2016.06/hspice/linux; \
+        ln -s /usr/synopsys/icc-L-2016.03-SP1/linux64 /usr/synopsys/icc-L-2016.03-SP1/linux; \
+        ln -s /usr/synopsys/lc-M-2016.12/linux64 /usr/synopsys/lc-M-2016.12/aarch64; \
+        sed -i 's|set OS=linux|set OS=linux64|' /usr/synopsys/fm-O-2018.06-SP1/bin/snps_platform; \
+        sed -i 's|ARCH_64bit=unknown|ARCH_64bit=linux64|' /usr/synopsys/pt-M-2016.12-SP1/linux64/syn/bin/pt_shell; \
+        sed '/case `uname -m` in/a \ \ aarch64)\n    ;;' /tools/Xilinx/Vivado/2023.1/bin/loader | sed '/case `uname -m` in/a \ \ x86_64)\n    ;;' > tmpfile && mv tmpfile /tools/Xilinx/Vivado/2023.1/bin/loader && chmod +x /tools/Xilinx/Vivado/2023.1/bin/loader; \
+        sed '/case `uname -m` in/a \ \ aarch64)\n    ;;' /tools/Xilinx/Vitis_HLS/2023.1/bin/loader | sed '/case `uname -m` in/a \ \ x86_64)\n    ;;' > tmpfile && mv tmpfile /tools/Xilinx/Vitis_HLS/2023.1/bin/loader && chmod +x /tools/Xilinx/Vitis_HLS/2023.1/bin/loader; \
+    ## This stage is used on amd64"
+    else \ 
+        sed -i '/-XX:ActiveProcessorCount=2/d' /opt/intelFPGA/22.1std/nios2eds/bin/eclipse_nios2/eclipse.ini; \
+        sed -i 's/taskset -c 0-3 //' /root/Desktop/Vivado2023.1.desktop; \
+        sed -i 's/taskset -c 4-7 //' /root/Desktop/VitisHLS2023.1.desktop; \
+        sed -i 's/taskset -c 0-3 //' /root/Desktop/Quartus.desktop; \
+        sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/vivado; \
+        sed -i 's/taskset -c 4-7 //' /usr/share/modules/modulefiles/vivado; \
+        sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/quartus/22.1std; \
+        sed -i 's|Exec=/opt/altera/13.0sp1/quartus/bin/quartus|Exec=/opt/altera/13.0sp1/quartus/bin/quartus --64bit|' /root/Desktop/QuartusII.desktop; \
+        sed -i 's/(32-bit)/(64-bit)/g' /root/Desktop/QuartusII.desktop; \
+        echo 'set-alias quartus "quartus --64bit"' >> /usr/share/modules/modulefiles/quartus/13.0sp1; \
+        sed -i 's/Apple Silicon Macs/x86_64 machines/' /bin/info; \
+    fi
+
 # Docker config
 EXPOSE 3389
 ENTRYPOINT ["/usr/bin/run.sh"]
-
-## This stage is used on arm64"
-FROM base as build-arm64
-ADD oss-cad-suite-linux-arm64-20231005.tgz /tools
-RUN ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/aarch64 \
-    && ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/platform/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/platform/aarch64 \
-    && ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/aarch64 \
-    && ln -s /usr/synopsys/dc-L-2016.03-SP1/linux64 /usr/synopsys/dc-L-2016.03-SP1/linux \
-    && ln -s /usr/synopsys/hspice-L-2016.06/hspice/linux64 /usr/synopsys/hspice-L-2016.06/hspice/linux \
-    && ln -s /usr/synopsys/icc-L-2016.03-SP1/linux64 /usr/synopsys/icc-L-2016.03-SP1/linux \
-    && ln -s /usr/synopsys/lc-M-2016.12/linux64 /usr/synopsys/lc-M-2016.12/aarch64
-
-RUN sed -i 's|set OS=linux|set OS=linux64|' /usr/synopsys/fm-O-2018.06-SP1/bin/snps_platform
-RUN sed -i 's|ARCH_64bit=unknown|ARCH_64bit=linux64|' /usr/synopsys/pt-M-2016.12-SP1/linux64/syn/bin/pt_shell
-
-RUN sed '/case `uname -m` in/a \ \ aarch64)\n    ;;' /tools/Xilinx/Vivado/2023.1/bin/loader | sed '/case `uname -m` in/a \ \ x86_64)\n    ;;' > tmpfile && mv tmpfile /tools/Xilinx/Vivado/2023.1/bin/loader && chmod +x /tools/Xilinx/Vivado/2023.1/bin/loader \
-    && sed '/case `uname -m` in/a \ \ aarch64)\n    ;;' /tools/Xilinx/Vitis_HLS/2023.1/bin/loader | sed '/case `uname -m` in/a \ \ x86_64)\n    ;;' > tmpfile && mv tmpfile /tools/Xilinx/Vitis_HLS/2023.1/bin/loader && chmod +x /tools/Xilinx/Vitis_HLS/2023.1/bin/loader
-
-## This stage is used on amd64"
-FROM base as build-amd64
-ADD oss-cad-suite-linux-x64-20231005.tgz /tools
-
-RUN sed -i '/-XX:ActiveProcessorCount=2/d' /opt/intelFPGA/22.1std/nios2eds/bin/eclipse_nios2/eclipse.ini \
-    && sed -i 's/taskset -c 0-3 //' /root/Desktop/Vivado2023.1.desktop \
-    && sed -i 's/taskset -c 4-7 //' /root/Desktop/VitisHLS2023.1.desktop \
-    && sed -i 's/taskset -c 0-3 //' /root/Desktop/Quartus.desktop \
-    && sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/vivado \
-    && sed -i 's/taskset -c 4-7 //' /usr/share/modules/modulefiles/vivado \
-    && sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/quartus/22.1std \
-    && sed -i 's|Exec=/opt/altera/13.0sp1/quartus/bin/quartus|Exec=/opt/altera/13.0sp1/quartus/bin/quartus --64bit|' /root/Desktop/QuartusII.desktop \
-    && sed -i 's/(32-bit)/(64-bit)/g' /root/Desktop/QuartusII.desktop
-
-RUN echo 'set-alias quartus "quartus --64bit"' >> /usr/share/modules/modulefiles/quartus/13.0sp1 \
-    && sed -i 's/Apple Silicon Macs/x86_64 machines/' /bin/info
-
-FROM build-${TARGETARCH} AS build
