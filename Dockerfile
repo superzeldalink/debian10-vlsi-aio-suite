@@ -1,5 +1,5 @@
 # Use the base image    
-FROM debian:buster-slim AS tools-base
+FROM amd64/debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
 
 ARG VERSION=v1.0
@@ -11,7 +11,7 @@ ADD quartus_22.1std.tgz /opt
 ADD synopsys.tgz /usr
 ADD vivado.tgz /tools
 ADD quartus_13.tgz /opt
-ADD oss-cad-suite-linux-${TARGETARCH}-20231005.tgz /tools
+ADD oss-cad-suite-linux-amd64-20231005.tgz /tools
 
 RUN dpkg --add-architecture amd64 \
     && dpkg --add-architecture i386
@@ -42,7 +42,7 @@ RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 RUN apt install -y htop nano vim neovim tree locales mousepad git xterm tcl yad environment-modules 
 
-# INSTALL QUARTUS
+### INSTALL QUARTUS
 # Install dependencies
 RUN apt install -y libc6:amd64 libglib2.0-0:amd64 libfontconfig1:amd64 libx11-xcb1:amd64 libxext6:amd64 libsm6:amd64 libdbus-1-3:amd64 libxft2:amd64
 
@@ -51,7 +51,7 @@ RUN mkdir /root/.altera.quartus
 RUN echo "[General 22.1]" > /root/.altera.quartus/quartus2.ini \
     && echo "LICENSE_FILE = LM_LICENSE_FILE" >> /root/.altera.quartus/quartus2.ini
 
-# INSTALL SYNOPSYS
+### INSTALL SYNOPSYS
 RUN mkdir -p /usr/local/flexlm/licenses/ \
     && mkdir -p /usr/tmp/.flexlm
 
@@ -64,23 +64,25 @@ COPY license.dat /usr/local/flexlm/licenses
 COPY daemons/mgcld /usr/synopsys/11.9/amd64/bin
 COPY libpng12.so.0.54.0 /usr/lib
 
-# Create a symbolic link for libpng
-RUN ln -s /usr/lib/libpng12.so.0.54.0 /usr/lib/libpng12.so.0
+# Create a symbolic links
+RUN ln -s /usr/lib/libpng12.so.0.54.0 /usr/lib/libpng12.so.0 \
+    && ln -s /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3 \
+    && ln -s /usr/lib/x86_64-linux-gnu/libtiff.so.5 /usr/lib/x86_64-linux-gnu/libtiff.so.3
+
+# Patches
+RUN mv /usr/synopsys/cx-K-2015.06/platforms/linux64/lib/libstdc++.so.6 /usr/synopsys/cx-K-2015.06/platforms/linux64/lib/libstdc++.so.6_bak \
+    && ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/synopsys/cx-K-2015.06/platforms/linux64/lib/libstdc++.so.6 \
+    && mv /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/etc/lib/libstdc++/LINUXAMD64/libtinfo.so.5 /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/etc/lib/libstdc++/LINUXAMD64/libtinfo.so.5_bak \
+    && ln -s c /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/etc/lib/libstdc++/LINUXAMD64/libtinfo.so.5
 
 # Set bash as the default shell
 RUN rm -f /usr/bin/sh && ln -s /usr/bin/bash /usr/bin/sh \
     && rm -f /bin/sh && ln -s /bin/bash /bin/sh
 
-# Create a symbolic link for ld-linux
-RUN ln -s /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3
-
-# Create a symbolic link for libtiff3
-RUN ln -s /usr/lib/x86_64-linux-gnu/libtiff.so.5 /usr/lib/x86_64-linux-gnu/libtiff.so.3
-
-# INSTALL VIVADO
+### INSTALL VIVADO
 RUN apt install -y libtinfo5:amd64 libxtst6:amd64 libasound2:amd64 libcom-err2:amd64 libkeyutils1:amd64 libpulse0:amd64 libqt5webenginewidgets5:amd64
 
-# Install QUARTUS 13
+### INSTALL QUARTUS 13
 RUN apt install -y libc6:i386 libx11-6:i386 libxext6:i386 libxft2:i386 libncurses5:i386 libsm6:i386
 
 ######### FINALIZE
@@ -133,6 +135,7 @@ RUN if [ "${TARGETARCH}" = "arm64" ]; then \
         ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/aarch64; \
         ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/platform/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/platform/aarch64; \
         ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/aarch64; \
+        ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/linux; \
         ln -s /usr/synopsys/dc-L-2016.03-SP1/linux64 /usr/synopsys/dc-L-2016.03-SP1/linux; \
         ln -s /usr/synopsys/hspice-L-2016.06/hspice/linux64 /usr/synopsys/hspice-L-2016.06/hspice/linux; \
         ln -s /usr/synopsys/icc-L-2016.03-SP1/linux64 /usr/synopsys/icc-L-2016.03-SP1/linux; \

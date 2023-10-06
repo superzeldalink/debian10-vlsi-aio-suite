@@ -56,10 +56,6 @@ echo "alias ls='ls $LS_OPTIONS'" >> /root/.bashrc
 echo "alias ll='ls $LS_OPTIONS -l'" >> /root/.bashrc
 echo "alias l='ls $LS_OPTIONS -lA'" >> /root/.bashrc
 
-mv /usr/synopsys/cx-K-2015.06/platforms/linux64/lib/libstdc++.so.6 /usr/synopsys/cx-K-2015.06/platforms/linux64/lib/libstdc++.so.6_bak
-ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/synopsys/cx-K-2015.06/platforms/linux64/lib/libstdc++.so.6
-mv /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/etc/lib/libstdc++/LINUXAMD64/libtinfo.so.5 /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/etc/lib/libstdc++/LINUXAMD64/libtinfo.so.5_bak
-ln -s c /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/etc/lib/libstdc++/LINUXAMD64/libtinfo.so.5
 cp -r /lib/terminfo/* /usr/share/terminfo/ 2> /dev/null
 /usr/synopsys/11.9/amd64/bin/lmgrd -c /usr/local/flexlm/licenses/license.dat >> /root/startup_run.log
 

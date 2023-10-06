@@ -28,21 +28,21 @@ update-build-file:
 
 # Build the Docker image with the build number as an argument
 build: update-build-file
-	docker build --build-arg="TARGETARCH=$(ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-rtl-suite:latest-$(ARCH) .
+	docker build --build-arg="TARGETARCH=$(TARGET_ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH) .
 
 push:
-	docker push superzeldalink/debian10-rtl-suite:latest-$(ARCH)
+	docker push superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH)
 
 stop-container:
 	docker stop rtl-suite || true && docker rm rtl-suite || true
 
 # Run a container from the newly built image
 run: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 3389:3389 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(ARCH) link
+	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 3389:3389 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH) link
 run-vnc: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 5900:5900 -p 5901:5901 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(ARCH) link vnc
+	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 5900:5900 -p 5901:5901 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH) link vnc
 run-ssh: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 2222:22 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(ARCH) link ssh
+	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 2222:22 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH) link ssh
 
 # Default target
 all: build run
