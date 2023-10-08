@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Virtuoso
+Exec=/bin/bash -c "module load virtuoso mmsim && virtuoso"
+Terminal=false
+Type=Application
+Icon=/opt/cadence/IC617/doc/customhome_ch/images/logo.png
+Categories=Utility;

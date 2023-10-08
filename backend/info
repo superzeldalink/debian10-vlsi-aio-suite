@@ -15,28 +15,7 @@ v1.30 - 061023: Updated multi-arch images
 v2.00 - 081023: Renamed to VLSI AIO/Frontend/Backend Suite"
 
 # Define the tool information
-tools=("Quartus Prime + QuestaSim|22.1std|module load quartus/22.1std"
-       "Quartus II + ModelSim|13.0sp1|module load quartus/13.0sp1"
-       "Vivado ML Standard Edition|2023.1|module load vivado"
-       "oss-cad-suite|20231005|module load oss-cad-suite"
-       "      Yosys|0.33+112k| "
-       "      Cocotb|1.9.0.dev0| "
-       "      Verilator|5.017| "
-       "      GTKWave|3.4.0| "
-       "      Icarus Verilog|13.0| "
-       "      ...| | "
-       "Synopsys| |module load synopsys"
-       "      Design Compiler|L-2016.03-SP1| "
-       "      VCS MX|O-2018.09-SP2-2| "
-       "      Verdi|O-2018.09-SP2-2| "
-       "      VC Static|O-2018.09-SP2-2| "
-       "      Formality|O-2018.06-SP1| "
-       "      Library Compiler|M-2016.12| "
-       "      PrimeTime|M-2016.12-SP1| "
-       "      IC Compiler|L-2016.03-SP1| "
-       "      HSPICE|L-2016.06-SP1| "
-       "      CustomExplorer|K-2015.06| "
-       "Cadence Virtuoso|IC6.1.7-64b.78|module load virtuoso"
+tools=("Cadence Virtuoso|IC6.1.7-64b.78|module load virtuoso"
        "Cadence MMSIM|15.1|module load mmsim"
        "Mentor Calibre|2015.2_36.27|module load calibre")
 
@@ -67,7 +46,7 @@ sed -r "s/:[ ]*/\n/" /proc/meminfo |\
       --list --no-selection --text="$updatenotes" &
 
 # Main dialog
-TXT="<b>Image information</b>: Debian VLSI AIO Suite ;;VERSION build ;;BUILD_NUMBER\\n"
+TXT="<b>Image information</b>: Debian VLSI Backend Suite ;;VERSION build ;;BUILD_NUMBER\\n"
 TXT+="\\tOS: $(lsb_release -ds) on $(hostname)\\n"
 ;;BuiltAt
 TXT+="<b>Note:</b> The container is optimized for Apple Silicon Macs.\\n"

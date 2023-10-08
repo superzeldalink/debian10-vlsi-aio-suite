@@ -1,16 +1,25 @@
 # Makefile
-ARCH := $(shell uname -m)
+ROOT_PASSWD ?= link
+ARCH ?= $(shell uname -m)
+SUITE ?= aio
+
+RDP_PORT ?= 3389
+VNC_PORT ?= 5900
+SSH_PORT ?= 2222
 
 # Set the target architecture based on the detected architecture
 ifeq ($(ARCH),aarch64)
-    TARGET_ARCH := arm64
+    TARGET_ARCH := mac
 else ifeq ($(ARCH),arm64)
-    TARGET_ARCH := arm64
+    TARGET_ARCH := mac
 else ifeq ($(ARCH),x86_64)
     TARGET_ARCH := amd64
 else
     $(error Unsupported architecture: $(ARCH))
 endif
+
+DOCKERFILE := Dockerfile-$(SUITE)
+IMAGE_NAME := superzeldalink/debian10-vlsi-$(SUITE)-suite:$(TARGET_ARCH)
 
 # Path to the build file
 BUILD_FILE := version
@@ -28,21 +37,54 @@ update-build-file:
 
 # Build the Docker image with the build number as an argument
 build: update-build-file
-	docker build --build-arg="TARGETARCH=$(TARGET_ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH) .
+	docker build -f $(DOCKERFILE) --build-arg="TARGETARCH=$(TARGET_ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t $(IMAGE_NAME) .
 
 push:
-	docker push superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH)
+	docker push $(IMAGE_NAME)
 
 stop-container:
-	docker stop rtl-suite || true && docker rm rtl-suite || true
+	docker stop $(SUITE)-suite || true && docker rm $(SUITE)-suite || true
 
 # Run a container from the newly built image
 run: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 3389:3389 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH) link
+	docker run -it -d --hostname link --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(RDP_PORT):3389 -v /Users/link/Documents/SharedVM:/media/share $(IMAGE_NAME) $(ROOT_PASSWD)
 run-vnc: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 5900:5900 -p 5901:5901 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH) link vnc
+	docker run -it -d --hostname link --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(VNC_PORT):5900 -p 5901:5901 -v /Users/link/Documents/SharedVM:/media/share $(IMAGE_NAME) $(ROOT_PASSWD) vnc
 run-ssh: stop-container
-	docker run -it -d --hostname link --name rtl-suite --mac-address 02:42:ac:11:00:02 -p 2222:22 -v /Users/link/Documents/SharedVM:/media/share superzeldalink/debian10-rtl-suite:latest-$(TARGET_ARCH) link ssh
+	docker run -it -d --hostname link --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(SSH_PORT):22 -v /Users/link/Documents/SharedVM:/media/share $(IMAGE_NAME) $(ROOT_PASSWD) ssh
 
 # Default target
 all: build run
+
+### BUILD/PUSH ALL
+# Define the list of suites and architectures
+SUITES = aio frontend backend
+ARCHITECTURES = amd64 mac
+
+##### BUILD ALL
+# Define the targets for building Docker images
+build-all: $(foreach suite,$(SUITES),$(foreach arch,$(ARCHITECTURES),build-$(suite)-$(arch)))
+
+# Define the individual build targets
+define BUILD_TARGET
+build-$(1)-$(2):
+	@echo "Building superzeldalink/debian10-vlsi-$(1)-suite:$(2)..."
+	@docker build -f Dockerfile-$(1) --build-arg="TARGETARCH=$(2)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-vlsi-$(1)-suite:$(2) .
+endef
+
+# Create the build targets for each combination of suite and architecture
+$(foreach suite,$(SUITES),$(foreach arch,$(ARCHITECTURES),$(eval $(call BUILD_TARGET,$(suite),$(arch)))))
+
+##### PUSH ALL
+# Define the targets for pushing Docker images
+push-all: $(foreach suite,$(SUITES),$(foreach arch,$(ARCHITECTURES),push-$(suite)-$(arch)))
+
+# Define the individual push targets
+define PUSH_TARGET
+push-$(1)-$(2):
+	@echo "Pushing superzeldalink/debian10-vlsi-$(1)-suite:$(2)..."
+	@docker push superzeldalink/debian10-vlsi-$(1)-suite:$(2)
+endef
+
+# Create the push targets for each combination of suite and architecture
+$(foreach suite,$(SUITES),$(foreach arch,$(ARCHITECTURES),$(eval $(call PUSH_TARGET,$(suite),$(arch)))))

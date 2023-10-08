@@ -1,20 +1,20 @@
-# debian10-rtl-suite Docker Image
+# debian10-vlsi-aio-suite Docker Image
 
-This repository contains a Docker image generation script for creating a Debian 10-based Docker image that includes various tools commonly used in RTL (Register-Transfer Level) design. Please note that this repository only provides the script to generate the Docker image, and you will need to download, install, and generate the required RTL design tools yourself. After obtaining these tools, you can create a tar.gz archive to be used in the Docker image.
+This repository contains a Docker image generation script for creating a Debian 10-based Docker image that includes various tools commonly used in VLSI (frontend + backend) design. Please note that this repository only provides the script to generate the Docker image, and you will need to download, install, and generate the required tools yourself. After obtaining these tools, you can create a tgz archive to be used in the Docker image.
 
-## Included RTL Design Tools
+## Included VLSI Tools
 
-The Debian 10-based Docker image generated using this script includes the following RTL design tools:
+The Debian 10-based Docker image generated using this script includes the following VLSI tools:
 
-1. **Quartus Prime + QuestaSim (quartus_22.1std.tar.gz)**
+1. **Quartus Prime + QuestaSim (quartus_22.1std.tgz)**
   - Version: 22.1std
   - Load Module Command: `module load quartus/22.1std`
 
-2. **Quartus II + ModelSim (quartus_13.tar.gz)**
+2. **Quartus II + ModelSim (quartus_13.tgz)**
   - Version: 13.0sp1
   - Load Module Command: `module load quartus/13.0sp1`
 
-3. **Vivado ML Standard Edition (vivado.tar.gz)**
+3. **Vivado ML Standard Edition (vivado.tgz)**
   - Version: 2023.1
   - Load Module Command: `module load vivado`
 
@@ -22,7 +22,7 @@ The Debian 10-based Docker image generated using this script includes the follow
   - Version: 20230922
   - Load Module Command: `module load oss-cad-suite`
 
-5. **Synopsys Tools (synopsys.tar.gz)**
+5. **Synopsys Tools (synopsys.tgz)**
   - Load Module Command: `module load synopsys`
     - **Design Compiler**
       - Version: L-2016.03-SP1
@@ -49,41 +49,41 @@ The Debian 10-based Docker image generated using this script includes the follow
 
 ### Building Image
 
-To create the Debian 10-based Docker image with these RTL design tools, follow these steps:
+To create the Debian 10-based Docker image with these VLSI tools, follow these steps:
 
-1. Download and install the required RTL design tools mentioned above. Ensure that they are working correctly on your system.
+1. Download and install the required VLSI tools mentioned above. Ensure that they are working correctly on your system.
 
-2. Generate a tar.gz archive containing these tools. You can use the following command as a reference:
+2. Generate a tgz archive containing these tools. You can use the following command as a reference:
 
    ```bash
-   tar -czvf rtl-tools.tar.gz /path/to/rtl-tools
+   tar -czvf rtl-tools.tgz /path/to/rtl-tools
    ```
 
-   Replace `/path/to/rtl-tools` with the actual path to the directory containing the RTL design tools.
+   Replace `/path/to/rtl-tools` with the actual path to the directory containing the VLSI tools.
 
 3. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com/superzeldalink/debian10-rtl-suite.git
+   git clone https://github.com/superzeldalink/debian10-vlsi-aio-suite.git
    ```
 
-4. Copy the `rtl-tools.tar.gz` archive generated in step 2 into the cloned repository directory.
+4. Copy the `rtl-tools.tgz` archive generated in step 2 into the cloned repository `frontend` or `backend` subdirectory.
 
 5. Build the Docker image using:
 
    ```bash
-   make build
+   make build ARCH=amd/mac SUITE=aio/frontend/backend
    ```
 
 6. Once the Docker image is built, you can run a container using it:
 
    ```bash
-   make run
+   make run ARCH=amd/mac SUITE=aio/frontend/backend ROOT_PASSWD=<your_password>
    ```
 
-   You now have access to the RTL design tools within the Docker container.
+   You now have access to the VLSI tools within the Docker container.
 
-Please note that this Docker image is a starting point, and you may need to customize it further to suit your specific requirements or add additional RTL design tools as needed.
+Please note that this Docker image is a starting point, and you may need to customize it further to suit your specific requirements or add additional VLSI tools as needed.
 
 ### Run
 #### Available Modes
@@ -101,6 +101,12 @@ Please note that this Docker image is a starting point, and you may need to cust
 
 Please replace <port> with the appropriate port number based on your chosen mode.
 
+### Notes
+Hey, take a peek at the files to dive deeper into it. I'm feeling a bit too lazy to whip up a README right now. :v
+
+Any contributions to this README would be super duper appreciated! :3
+
+<!-- 
 #### Running the container
 
 ##### Running with RDP and SSH (Default)
@@ -139,4 +145,4 @@ docker run -it -d --name rtl-suite \
 After running one of these commands, the container named `rtl-suite` will be started with the specified mode. You can access the container based on the chosen mode as described in the README file.
 
 ##### Notes
-- The image is optimized for Apple Silicon Macs by default. If you are running this on the x86_64 machines, add `amd64` to the `docker run` command.
+- The image is optimized for Apple Silicon Macs by default. If you are running this on the x86_64 machines, add `amd64` to the `docker run` command. -->

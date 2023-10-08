@@ -7,11 +7,12 @@ ARG BUILD_NUMBER=0
 ARG TARGETARCH
 
 ### COMMON
-ADD quartus_22.1std.tgz /opt
-ADD synopsys.tgz /usr
-ADD vivado.tgz /tools
-ADD quartus_13.tgz /opt
-ADD oss-cad-suite-linux-amd64-20231005.tgz /tools
+ADD frontend/quartus_22.1std.tgz /opt
+ADD frontend/synopsys.tgz /usr
+ADD frontend/vivado.tgz /tools
+ADD frontend/quartus_13.tgz /opt
+ADD frontend/oss-cad-suite-linux-amd64-20231005.tgz /tools
+ADD backend/cadence.tgz /opt
 
 RUN dpkg --add-architecture amd64 \
     && dpkg --add-architecture i386
@@ -60,9 +61,9 @@ RUN apt install -y libncurses5:amd64 libmng1:amd64 csh dc \
     libstdc++6:amd64 libxss1:amd64 libxt6:amd64 libxmu6:amd64 libnuma1:amd64 libxi6:amd64 libxrandr2:amd64 libtiff5:amd64 libgl1:amd64
 
 # Copy Synopsys license file and daemons
-COPY license.dat /usr/local/flexlm/licenses
-COPY daemons/mgcld /usr/synopsys/11.9/amd64/bin
-COPY libpng12.so.0.54.0 /usr/lib
+COPY frontend/license.dat /usr/local/flexlm/licenses
+COPY frontend/daemons/mgcld /usr/synopsys/11.9/amd64/bin
+COPY frontend/libpng12.so.0.54.0 /usr/lib
 
 # Create a symbolic links
 RUN ln -s /usr/lib/libpng12.so.0.54.0 /usr/lib/libpng12.so.0 \
@@ -85,18 +86,29 @@ RUN apt install -y libtinfo5:amd64 libxtst6:amd64 libasound2:amd64 libcom-err2:a
 ### INSTALL QUARTUS 13
 RUN apt install -y libc6:i386 libx11-6:i386 libxext6:i386 libxft2:i386 libncurses5:i386 libsm6:i386
 
+### INSTALL CADENCE
+RUN apt install -y ksh csh libc6-amd64 evince
+
+COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco
+COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
+
+RUN chmod +x /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
+
 ######### FINALIZE
 # Add modules
-COPY modules /usr/share/modules/modulefiles
+COPY frontend/modules /usr/share/modules/modulefiles
+COPY backend/modules /usr/share/modules/modulefiles
 
 # Add Desktop shortcuts
 RUN mkdir /root/Desktop
-COPY Desktop/* /root/Desktop
+COPY Desktop/* /root/Desktop/
+COPY frontend/Desktop/* /root/Desktop/
+COPY backend/Desktop/* /root/Desktop/
 RUN find /root/Desktop -type f -exec chmod +x {} \; 
 
 # Create symbolic links for shared folders
 RUN mkdir /media/share \
-    && ln -s /media/share /root/Desktop/Share\
+    && ln -s /media/share /root/Desktop/Share \
     && ln -s /media/share /root/Share
 
 # PCMAN bypass asking for execute
@@ -119,9 +131,8 @@ RUN sed -i "s/;;VERSION/$VERSION/" /bin/info \
     && sed -i 's/;;BuiltAt/TXT+="\\tBuilt at `date`\\n\\n"/g' /bin/info
 
 # Copy a custom script and set it as the entry point
-COPY ./ubuntu-run.sh /usr/bin/
-RUN mv /usr/bin/ubuntu-run.sh /usr/bin/run.sh \
-    && chmod +x /usr/bin/run.sh
+COPY ./run.sh /usr/bin/run.sh
+RUN chmod +x /usr/bin/run.sh
 
 # Set the root password
 RUN echo 'root:toor' | chpasswd
@@ -130,20 +141,9 @@ RUN echo 'root:toor' | chpasswd
 RUN rm -rf /var/cache/apt /var/lib/apt/lists
 RUN rm -rf /tmp/*
 
-## This stage is used on arm64"
-RUN if [ "${TARGETARCH}" = "arm64" ]; then \
-        ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/aarch64; \
-        ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/platform/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/platform/aarch64; \
-        ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/aarch64; \
-        ln -s /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/linux64 /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/linux; \
-        ln -s /usr/synopsys/dc-L-2016.03-SP1/linux64 /usr/synopsys/dc-L-2016.03-SP1/linux; \
-        ln -s /usr/synopsys/hspice-L-2016.06/hspice/linux64 /usr/synopsys/hspice-L-2016.06/hspice/linux; \
-        ln -s /usr/synopsys/icc-L-2016.03-SP1/linux64 /usr/synopsys/icc-L-2016.03-SP1/linux; \
-        ln -s /usr/synopsys/lc-M-2016.12/linux64 /usr/synopsys/lc-M-2016.12/aarch64; \
-        sed -i 's|set OS=linux|set OS=linux64|' /usr/synopsys/fm-O-2018.06-SP1/bin/snps_platform; \
-        sed -i 's|ARCH_64bit=unknown|ARCH_64bit=linux64|' /usr/synopsys/pt-M-2016.12-SP1/linux64/syn/bin/pt_shell; \
-        sed '/case `uname -m` in/a \ \ aarch64)\n    ;;' /tools/Xilinx/Vivado/2023.1/bin/loader | sed '/case `uname -m` in/a \ \ x86_64)\n    ;;' > tmpfile && mv tmpfile /tools/Xilinx/Vivado/2023.1/bin/loader && chmod +x /tools/Xilinx/Vivado/2023.1/bin/loader; \
-        sed '/case `uname -m` in/a \ \ aarch64)\n    ;;' /tools/Xilinx/Vitis_HLS/2023.1/bin/loader | sed '/case `uname -m` in/a \ \ x86_64)\n    ;;' > tmpfile && mv tmpfile /tools/Xilinx/Vitis_HLS/2023.1/bin/loader && chmod +x /tools/Xilinx/Vitis_HLS/2023.1/bin/loader; \
+## This stage is used on mac"
+RUN if [ "${TARGETARCH}" = "mac" ]; then \
+        echo "TARGETARCH = mac"; \
     ## This stage is used on amd64"
     else \ 
         sed -i '/-XX:ActiveProcessorCount=2/d' /opt/intelFPGA/22.1std/nios2eds/bin/eclipse_nios2/eclipse.ini; \

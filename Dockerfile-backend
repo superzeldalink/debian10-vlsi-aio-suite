@@ -1,0 +1,104 @@
+# Use the base image    
+FROM amd64/debian:buster-slim 
+ENV DEBIAN_FRONTEND noninteractive
+
+ARG VERSION=v1.0
+ARG BUILD_NUMBER=0
+ARG TARGETARCH
+
+### COMMON
+ADD backend/cadence.tgz /opt
+
+RUN dpkg --add-architecture amd64 \
+    && dpkg --add-architecture i386
+RUN apt -y update && apt -y upgrade
+RUN apt install -y \
+    lxde-core \
+    xfce4-terminal
+
+# Install required packages for RDP
+RUN apt install -y sudo wget xorgxrdp xrdp \
+    && apt remove -y light-locker xscreensaver \
+    && apt autoremove -y
+
+# Install VNC, SSH
+RUN apt install -y --no-install-recommends x11vnc xvfb openssh-server novnc python3-websockify
+RUN echo 'PermitRootLogin Yes' >> /etc/ssh/sshd_config \
+    && echo 'X11Forwarding yes' >> /etc/ssh/sshd_config \
+    && echo 'X11DisplayOffset 10' >> /etc/ssh/sshd_config \
+    && echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
+
+RUN apt install -y --no-install-recommends gcc make libc6-dev g++
+
+# Install Firefox
+RUN apt install -y firefox-esr
+
+# Install additional utilities and locales
+RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+RUN apt install -y htop nano vim neovim tree locales mousepad git xterm tcl yad environment-modules
+
+### INSTALL CADENCE
+RUN apt install -y ksh csh libc6-amd64 evince
+
+COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco
+COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
+
+RUN chmod +x /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
+
+######### FINALIZE
+# Add modules
+COPY backend/modules /usr/share/modules/modulefiles
+
+# Add Desktop shortcuts
+RUN mkdir /root/Desktop
+COPY Desktop/* /root/Desktop/
+COPY backend/Desktop/* /root/Desktop/
+RUN find /root/Desktop -type f -exec chmod +x {} \; 
+
+# Create symbolic links for shared folders
+RUN mkdir /media/share \
+    && ln -s /media/share /root/Desktop/Share\
+    && ln -s /media/share /root/Share
+
+# PCMAN bypass asking for execute
+RUN mkdir -p /root/.config/libfm
+RUN echo '[config]' > /root/.config/libfm/libfm.conf \
+    && echo 'quick_exec = 1' >> /root/.config/libfm/libfm.conf
+
+# Unlimited Scroll for XFCE Terminal
+RUN mkdir -p /root/.config/xfce4/terminal
+RUN echo '[Configuration]' > /root/.config/xfce4/terminal/terminalrc \
+    && echo 'ScrollingUnlimited=TRUE' >> /root/.config/xfce4/terminal/terminalrc
+
+# Add info.sh
+COPY backend/info /bin
+COPY info_autostart.desktop /etc/xdg/autostart
+RUN chmod +x /bin/info
+
+RUN sed -i "s/;;VERSION/$VERSION/" /bin/info \
+    && sed -i "s/;;BUILD_NUMBER/$BUILD_NUMBER/" /bin/info \
+    && sed -i 's/;;BuiltAt/TXT+="\\tBuilt at `date`\\n\\n"/g' /bin/info
+
+# Copy a custom script and set it as the entry point
+COPY ./run.sh /usr/bin/run.sh
+RUN chmod +x /usr/bin/run.sh
+
+# Set the root password
+RUN echo 'root:toor' | chpasswd
+
+# Remove apt caches and /tmp
+RUN rm -rf /var/cache/apt /var/lib/apt/lists
+RUN rm -rf /tmp/*
+
+## This stage is used on mac
+RUN if [ "${TARGETARCH}" = "mac" ]; then \
+        echo "TARGETARCH = mac"; \
+    ## This stage is used on amd64
+    else \
+        sed -i 's/Apple Silicon Macs/x86_64 machines/' /bin/info; \
+    fi
+
+# Docker config
+EXPOSE 3389
+ENTRYPOINT ["/usr/bin/run.sh"]
