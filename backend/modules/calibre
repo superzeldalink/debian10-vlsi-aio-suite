@@ -25,6 +25,8 @@ setenv CALIBRE_HOME /opt/mentor/calibre2015/aoi_cal_2015.2_36.27
 setenv MGC_LICENSE_FILE /opt/mentor/license/license.dat
 setenv MOZILLA_HOME /usr/bin/firefox
 setenv CDS_LOAD_ENV CWD
+setenv CALIBRE_DISABLE_SSE_CHECK YES
+setenv CALIBRE_DISABLE_SSE2_CHECK YES
 
 # Module description
 module-whatis "Environment module for Virtuoso tools"
