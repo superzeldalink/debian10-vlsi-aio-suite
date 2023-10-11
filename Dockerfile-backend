@@ -2,22 +2,16 @@
 FROM amd64/debian:buster-slim 
 ENV DEBIAN_FRONTEND noninteractive
 
-ARG VERSION=v1.0
-ARG BUILD_NUMBER=0
-ARG TARGETARCH
-
 ### COMMON
 ADD backend/cadence.tgz /opt
 
 RUN dpkg --add-architecture amd64 \
     && dpkg --add-architecture i386
 RUN apt -y update && apt -y upgrade
-RUN apt install -y \
-    lxde-core \
-    xfce4-terminal
+RUN apt install -y --no-install-recommends lxde-core xfce4-terminal
 
 # Install required packages for RDP
-RUN apt install -y sudo wget xorgxrdp xrdp \
+RUN apt install -y wget xorgxrdp xrdp \
     && apt remove -y light-locker xscreensaver \
     && apt autoremove -y
 
@@ -30,13 +24,10 @@ RUN echo 'PermitRootLogin Yes' >> /etc/ssh/sshd_config \
 
 RUN apt install -y --no-install-recommends gcc make libc6-dev g++
 
-# Install Firefox
-RUN apt install -y firefox-esr
-
 # Install additional utilities and locales
 RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
-RUN apt install -y htop nano vim neovim tree locales mousepad git xterm tcl yad environment-modules
+RUN apt install -y --no-install-recommends htop nano vim neovim tree locales mousepad git xterm tcl yad environment-modules firefox-esr
 
 ### INSTALL CADENCE
 RUN apt install -y ksh csh libc6-amd64 evince
@@ -70,6 +61,10 @@ RUN echo '[config]' > /root/.config/libfm/libfm.conf \
 RUN mkdir -p /root/.config/xfce4/terminal
 RUN echo '[Configuration]' > /root/.config/xfce4/terminal/terminalrc \
     && echo 'ScrollingUnlimited=TRUE' >> /root/.config/xfce4/terminal/terminalrc
+
+ARG VERSION=v1.0
+ARG BUILD_NUMBER=0
+ARG TARGETARCH
 
 # Add info.sh
 COPY backend/info /bin
