@@ -66,7 +66,7 @@ ARCHITECTURES = amd64 mac
 
 ##### BUILD ALL
 # Define the targets for building Docker images
-build-all: $(foreach suite,$(SUITES),$(foreach arch,$(ARCHITECTURES),build-$(suite)-$(arch)))
+build-all: update-build-file $(foreach suite,$(SUITES),$(foreach arch,$(ARCHITECTURES),build-$(suite)-$(arch)))
 
 # Define the individual build targets
 define BUILD_TARGET

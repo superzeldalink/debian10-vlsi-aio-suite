@@ -77,7 +77,7 @@ RUN chmod +x /bin/info
 
 RUN sed -i "s/;;VERSION/$VERSION/" /bin/info \
     && sed -i "s/;;BUILD_NUMBER/$BUILD_NUMBER/" /bin/info \
-    && sed -i 's/;;BuiltAt/TXT+="\\tBuilt at `date`\\n\\n"/g' /bin/info
+    && sed -i "s/;;BuiltAt/TXT+=\"\\\tBuilt at $(date)\\\n\\\n\"/g" /bin/info
 
 # Copy a custom script and set it as the entry point
 COPY ./run.sh /usr/bin/run.sh
