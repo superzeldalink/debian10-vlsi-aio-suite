@@ -19,7 +19,7 @@ else
 endif
 
 DOCKERFILE := Dockerfile-$(SUITE)
-IMAGE_NAME := superzeldalink/debian10-vlsi-$(SUITE)-suite:$(TARGET_ARCH)
+IMAGE_NAME := docker.linkclouds.top/debian10-vlsi-$(SUITE)-suite:$(TARGET_ARCH)
 
 # Path to the build file
 BUILD_FILE := version
@@ -37,6 +37,9 @@ update-build-file:
 
 # Build the Docker image with the build number as an argument
 build: update-build-file
+	docker build -f $(DOCKERFILE) --build-arg="TARGETARCH=$(TARGET_ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t $(IMAGE_NAME) .
+
+rebuild:
 	docker build -f $(DOCKERFILE) --build-arg="TARGETARCH=$(TARGET_ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t $(IMAGE_NAME) .
 
 push:
@@ -68,8 +71,8 @@ build-all: $(foreach suite,$(SUITES),$(foreach arch,$(ARCHITECTURES),build-$(sui
 # Define the individual build targets
 define BUILD_TARGET
 build-$(1)-$(2):
-	@echo "Building superzeldalink/debian10-vlsi-$(1)-suite:$(2)..."
-	@docker build -f Dockerfile-$(1) --build-arg="TARGETARCH=$(2)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t superzeldalink/debian10-vlsi-$(1)-suite:$(2) .
+	@echo "Building docker.linkclouds.top/debian10-vlsi-$(1)-suite:$(2)..."
+	@docker build -f Dockerfile-$(1) --build-arg="TARGETARCH=$(2)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t docker.linkclouds.top/debian10-vlsi-$(1)-suite:$(2) .
 endef
 
 # Create the build targets for each combination of suite and architecture
@@ -82,8 +85,8 @@ push-all: $(foreach suite,$(SUITES),$(foreach arch,$(ARCHITECTURES),push-$(suite
 # Define the individual push targets
 define PUSH_TARGET
 push-$(1)-$(2):
-	@echo "Pushing superzeldalink/debian10-vlsi-$(1)-suite:$(2)..."
-	@docker push superzeldalink/debian10-vlsi-$(1)-suite:$(2)
+	@echo "Pushing docker.linkclouds.top/debian10-vlsi-$(1)-suite:$(2)..."
+	@docker push docker.linkclouds.top/debian10-vlsi-$(1)-suite:$(2)
 endef
 
 # Create the push targets for each combination of suite and architecture

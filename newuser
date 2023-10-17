@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Check if the script is run with sudo
+if [ "$EUID" -ne 0 ]; then
+    echo "This script must be run with sudo or as the root user."
+    exit 1
+fi
+
+# Check if both username and password are provided as arguments
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <username> <password>"
+    exit 1
+fi
+
+new_username="$1"
+new_password="$2"
+
+# Function to add a new user
+add_new_user() {
+    adduser --disabled-password --gecos "" "$new_username"
+    echo "$new_username:$new_password" | chpasswd
+}
+
+# Function to configure the user's environment
+configure_user_environment() {
+    echo "export LD_LIBRARY_PATH=/usr/lib" >> "/home/$new_username/.bashrc"
+    echo "source /etc/profile.d/modules.sh" >> "/home/$new_username/.bashrc"
+    echo "alias ls='ls \$LS_OPTIONS'" >> "/home/$new_username/.bashrc"
+    echo "alias ll='ls \$LS_OPTIONS -l'" >> "/home/$new_username/.bashrc"
+    echo "alias l='ls \$LS_OPTIONS -lA'" >> "/home/$new_username/.bashrc"
+}
+
+# Function to copy desktop shortcuts
+copy_desktop_shortcuts() {
+    mkdir -p /home/$new_username/Desktop
+    cp -r /root/Desktop/* "/home/$new_username/Desktop/"
+    chown -R "$new_username:$new_username" "/home/$new_username/Desktop"
+    find /home/$new_username/Desktop -type f -exec chmod +x {} \; 
+}
+
+config_others() {
+    mkdir /home/$new_username/.altera.quartus \
+        && echo "[General 22.1]" > /home/$new_username/.altera.quartus/quartus2.ini \
+        && echo "LICENSE_FILE = LM_LICENSE_FILE" >> /home/$new_username/.altera.quartus/quartus2.ini
+    chown -R $new_username:$new_username /home/$new_username/.altera.quartus
+
+    mkdir -p /home/$new_username/.config/libfm \
+        && echo '[config]' > /home/$new_username/.config/libfm/libfm.conf \
+        && echo 'quick_exec = 1' >> /home/$new_username/.config/libfm/libfm.conf
+
+    mkdir -p /home/$new_username/.config/xfce4/terminal \
+        && echo '[Configuration]' > /home/$new_username/.config/xfce4/terminal/terminalrc \
+        && echo 'ScrollingUnlimited=TRUE' >> /home/$new_username/.config/xfce4/terminal/terminalrc
+
+    chown -R $new_username:$new_username /home/$new_username/.config
+}
+
+# Main script
+add_new_user
+configure_user_environment
+copy_desktop_shortcuts
+config_others
+
+echo "New user '$new_username' added, environment configured, and desktop shortcuts copied."

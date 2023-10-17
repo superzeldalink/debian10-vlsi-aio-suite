@@ -1,5 +1,5 @@
 # Use the base image    
-FROM amd64/debian:buster-slim
+FROM amd64/debian:buster-20230919-slim
 ENV DEBIAN_FRONTEND noninteractive
 
 ### COMMON
@@ -27,7 +27,7 @@ RUN echo 'PermitRootLogin Yes' >> /etc/ssh/sshd_config \
     && echo 'X11DisplayOffset 10' >> /etc/ssh/sshd_config \
     && echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
 
-RUN apt install -y --no-install-recommends gcc make libc6-dev g++
+RUN apt install -y --no-install-recommends gcc cmake make libc6-dev g++
 
 # Install additional utilities and locales
 RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
@@ -36,7 +36,7 @@ RUN apt install -y --no-install-recommends htop nano vim neovim tree locales mou
 
 ### INSTALL QUARTUS
 # Install dependencies
-RUN apt install -y libc6 libglib2.0-0 libfontconfig1 libx11-xcb1 libxext6 libsm6 libdbus-1-3 libxft2
+RUN apt install -y libc6 libglib2.0-0 libfontconfig1 libx11-xcb1 libxext6 libsm6 libdbus-1-3 libxft2 libpython3.7
 
 # Configure Quartus settings
 RUN mkdir /root/.altera.quartus
@@ -78,7 +78,7 @@ RUN apt install -y libtinfo5 libxtst6 libasound2 libcom-err2 libkeyutils1 libpul
 RUN apt install -y libc6:i386 libx11-6:i386 libxext6:i386 libxft2:i386 libncurses5:i386 libsm6:i386
 
 # INSTALL oss-cad-suite
-RUN apt install -y zlib1g-dev
+RUN apt install -y zlib1g-dev ghostscript
 
 ### INSTALL CADENCE
 RUN apt install -y ksh csh libc6-amd64 evince
@@ -87,6 +87,10 @@ COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/ca
 COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
 
 RUN chmod +x /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
+
+# Install PDKs
+ADD backend/PDKs/gpdk045.tgz /opt/PDKs
+COPY backend/PDKs/cds.lib /opt/cadence/IC617/share/cdssetup/cds.lib
 
 ######### FINALIZE
 # Add modules
@@ -156,6 +160,10 @@ RUN if [ "${TARGETARCH}" = "mac" ]; then \
         echo 'set-alias quartus "quartus --64bit"' >> /usr/share/modules/modulefiles/quartus/13.0sp1; \
         sed -i 's/Apple Silicon Macs/x86_64 machines/' /bin/info; \
     fi
+
+# Add script for create user
+COPY newuser /bin
+RUN chmod +x /bin/newuser
 
 # Docker config
 EXPOSE 3389

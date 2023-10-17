@@ -1,0 +1,7 @@
+# File Created by root at Sat Oct 14 00:08:19 2023
+# assisted by CdsLibEditor
+SOFTINCLUDE dfII/cds.lib
+SOFTINCLUDE hdl/cds.lib
+SOFTINCLUDE pic/cds.lib
+SOFTINCLUDE sg/cds.lib
+SOFTINCLUDE /opt/PDKs/gpdk045/cds.lib
