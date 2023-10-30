@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
 Version=0.9.4
-Name=Quartus II 13.0sp1 (32-bit) Web Edition
-Comment=Quartus II 13.0sp1 (32-bit)
+Name=Quartus II 13.0sp1 (64-bit) Web Edition
+Comment=Quartus II 13.0sp1 (64-bit)
 Icon=/opt/altera/13.0sp1/quartus/adm/quartusii.png
-Exec=/opt/altera/13.0sp1/quartus/bin/quartus
+Exec=/bin/bash -c "module load quartus/13.0sp1 && quartus"
 Terminal=false
 Path=/media/share

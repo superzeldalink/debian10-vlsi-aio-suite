@@ -11,3 +11,6 @@ v1.30 - 061023: Updated multi-arch images
 v2.00 - 081023: Renamed to VLSI AIO/Frontend/Backend Suite
 v2.01 - 141023: Added gpdk045 PDK
 v2.02 - 151023: Added newuser script for adding user
+v2.05 - 241023: Patched QuartusII for Apple Silicon
+v2.06 - 271023: Added VSCode (amd64), image viewer, archive viewer
+v2.07 - 271023: Replace QuartusII Web edition by Subscription edition

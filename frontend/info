@@ -12,7 +12,12 @@ v1.21 - 230923: Added vim, nvim
 v1.25 - 250923: Added ssh, vnc
 v1.26 - 021023: Updated ModelSim 18.1 to fix Itcl issue; Unlimited scroll for XFCE Terminal
 v1.30 - 061023: Updated multi-arch images
-v2.00 - 081023: Renamed to VLSI AIO/Frontend/Backend Suite"
+v2.00 - 081023: Renamed to VLSI AIO/Frontend/Backend Suite
+v2.01 - 141023: Added gpdk045 PDK
+v2.02 - 151023: Added newuser script for adding user
+v2.05 - 241023: Patched QuartusII for Apple Silicon
+v2.06 - 271023: Added VSCode (amd64), image viewer, archive viewer
+v2.07 - 271023: Replace QuartusII Web edition by Subscription edition"
 
 # Define the tool information
 tools=("Quartus Prime + QuestaSim|22.1std|module load quartus/22.1std"

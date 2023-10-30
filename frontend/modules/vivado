@@ -9,5 +9,7 @@ set-alias vivado "taskset -c 0-3 vivado"
 set-alias vitis "taskset -c 4-7 vitis_hls"
 set-alias docnav "/tools/Xilinx/DocNav/docnav --no-sandbox"
 
+setenv LD_PRELOAD /lib/x86_64-linux-gnu/libudev.so.1:/lib/x86_64-linux-gnu/libselinux.so.1
+
 # Module description
 module-whatis "Environment module for Xilinx Vivado and Vitis"

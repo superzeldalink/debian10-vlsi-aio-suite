@@ -48,9 +48,15 @@ push:
 stop-container:
 	docker stop $(SUITE)-suite || true && docker rm $(SUITE)-suite || true
 
+stop-production:
+	docker stop vlsi-production || true && docker rm vlsi-production || true
+
 # Run a container from the newly built image
+run-production: stop-production
+	docker run -it -d --hostname vlsi --privileged --shm-size=1G --name vlsi-production --mac-address 02:42:ac:11:00:02 -p 3999:3389 -v /home/link/Documents/VLSIServer/Data:/media/share -v /home/link/Documents/VLSIServer/Users:/home $(IMAGE_NAME) $(ROOT_PASSWD)
+
 run: stop-container
-	docker run -it -d --hostname link --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(RDP_PORT):3389 -v /Users/link/Documents/SharedVM:/media/share $(IMAGE_NAME) $(ROOT_PASSWD)
+	docker run -it -d --hostname link --privileged --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(RDP_PORT):3389 -v /Users/link/Documents/SharedVM:/media/share $(IMAGE_NAME) $(ROOT_PASSWD)
 run-vnc: stop-container
 	docker run -it -d --hostname link --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(VNC_PORT):5900 -p 5901:5901 -v /Users/link/Documents/SharedVM:/media/share $(IMAGE_NAME) $(ROOT_PASSWD) vnc
 run-ssh: stop-container

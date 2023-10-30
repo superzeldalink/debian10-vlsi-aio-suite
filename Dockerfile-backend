@@ -32,6 +32,13 @@ RUN apt install -y --no-install-recommends htop nano vim neovim tree locales mou
 ### INSTALL CADENCE
 RUN apt install -y ksh csh libc6-amd64 evince
 
+# Patches
+RUN ln -s /usr/lib/x86_64-linux-gnu /usr/lib64 \
+    && ln -s /usr/lib/libchm.so.1 /usr/lib/libchm.so \
+    && ln -s /usr/bin/gcc /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/gcc_sys \
+    && mv /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++ /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++_bak \
+    && ln -s /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/gcc_sys /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++
+
 COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco
 COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
 
@@ -39,9 +46,26 @@ RUN chmod +x /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/
 
 # Install PDKs
 ADD backend/PDKs/gpdk045.tgz /opt/PDKs
+ADD backend/PDKs/FreePDK45.tgz /opt/PDKs
+ADD backend/PDKs/FreePDK15.tgz /opt/PDKs
+ADD backend/PDKs/cdk160.tgz /opt/PDKs
 COPY backend/PDKs/cds.lib /opt/cadence/IC617/share/cdssetup/cds.lib
 
 ######### FINALIZE
+# Ultilities
+RUN apt install -y gpicview xarchiver iputils-ping
+
+# Install VSCode (amd64) only
+RUN if [ "${TARGETARCH}" = "amd64" ]; then \
+        apt install -y wget gpg; \
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg; \
+        install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg; \
+        sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'; \
+        rm -f packages.microsoft.gpg; \
+        apt install apt-transport-https && apt update; \
+        apt install -y code; \
+    fi
+
 # Add modules
 COPY backend/modules /usr/share/modules/modulefiles
 

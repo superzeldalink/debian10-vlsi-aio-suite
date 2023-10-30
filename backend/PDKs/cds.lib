@@ -4,4 +4,19 @@ SOFTINCLUDE dfII/cds.lib
 SOFTINCLUDE hdl/cds.lib
 SOFTINCLUDE pic/cds.lib
 SOFTINCLUDE sg/cds.lib
-SOFTINCLUDE /opt/PDKs/gpdk045/cds.lib
+DEFINE gpdk045 /opt/PDKs/gpdk045/gpdk045
+DEFINE NCSU_TechLib_FreePDK45  /opt/PDKs/FreePDK45/ncsu_basekit/lib/NCSU_TechLib_FreePDK45
+DEFINE NCSU_Devices_FreePDK45  /opt/PDKs/FreePDK45/ncsu_basekit/lib/NCSU_Devices_FreePDK45
+DEFINE NCSU_Devices_FreePDK15  /opt/PDKs/FreePDK15/cdslib/NCSU_TechLib_FreePDK15
+DEFINE      basic                   /opt/PDKs/ncsu-cdk-1.6.0/lib/basic
+DEFINE      NCSU_Analog_Parts 	    /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_Analog_Parts
+DEFINE      NCSU_Digital_Parts 	    /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_Digital_Parts
+--DEFINE      MOSIS_Layout_Test       /opt/PDKs/ncsu-cdk-1.6.0//lib/MOSIS_Layout_Test
+DEFINE      NCSU_TechLib_ami06      /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_TechLib_ami06
+DEFINE      NCSU_TechLib_ami16      /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_TechLib_ami16
+DEFINE      NCSU_TechLib_hp06       /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_TechLib_hp06
+DEFINE      NCSU_TechLib_tsmc02     /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_TechLib_tsmc02
+DEFINE      NCSU_TechLib_tsmc02d    /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_TechLib_tsmc02d
+DEFINE      NCSU_TechLib_tsmc03     /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_TechLib_tsmc03
+DEFINE      NCSU_TechLib_tsmc03d    /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_TechLib_tsmc03d
+DEFINE      NCSU_TechLib_tsmc04_4M2P    /opt/PDKs/ncsu-cdk-1.6.0//lib/NCSU_TechLib_tsmc04_4M2P

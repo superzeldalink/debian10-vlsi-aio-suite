@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=0.9.4
+Name=Programmer 22.1std
+Comment=Programmer 22.1std
+Icon=/opt/intelFPGA/22.1std/quartus/adm/quartusii.png
+Exec=/opt/intelFPGA/22.1std/quartus/bin/quartus_pgmw --64bit
+Terminal=false
+Path=/media/share

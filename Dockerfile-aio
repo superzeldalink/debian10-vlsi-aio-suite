@@ -75,13 +75,134 @@ RUN rm -f /usr/bin/sh && ln -s /usr/bin/bash /usr/bin/sh \
 RUN apt install -y libtinfo5 libxtst6 libasound2 libcom-err2 libkeyutils1 libpulse0 libqt5webenginewidgets5
 
 ### INSTALL QUARTUS 13
-RUN apt install -y libc6:i386 libx11-6:i386 libxext6:i386 libxft2:i386 libncurses5:i386 libsm6:i386
+RUN apt install -y libc6:i386 libx11-6:i386 libxext6:i386 libxft2:i386 libncurses5:i386 libsm6:i386 libxtst6:i386
+
+ARG TARGETARCH
+RUN if [ "${TARGETARCH}" = "mac" ]; then \
+        ## PATCH QUARTUS13
+        dpkg --add-architecture arm64; \
+        apt update; \
+        apt install -y qemu:arm64 binfmt-support:arm64 qemu-user-static:arm64; \
+        echo 'export CMD_NAME=`basename $0`; set -f; export cmd_line=""; for cmd in "$@"; do if test "$cmd" = "--64bit"; then export QUARTUS_64BIT=1; else cmd_line="$cmd_line \"$cmd\""; fi; done; eval exec "qemu-x86_64-static $(dirname $(which $CMD_NAME))/../linux64/$CMD_NAME $cmd_line"' > /opt/altera/13.0sp1/quartus/linux/quartus && chmod +x opt/altera/13.0sp1/quartus/linux/quartus; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus /opt/altera/13.0sp1/quartus/linux/quartus_map; \       
+        cp /opt/altera/13.0sp1/quartus/linux/quartus /opt/altera/13.0sp1/quartus/linux/quartus_fit; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus /opt/altera/13.0sp1/quartus/linux/quartus_pow; \
+        echo 'export CMD_NAME=`basename $0`; set -f; export cmd_line=""; for cmd in "$@"; do if test "$cmd" = "--64bit"; then export QUARTUS_64BIT=1; else cmd_line="$cmd_line \"$cmd\""; fi; done; eval exec "$(dirname $(which $CMD_NAME))/../linux64/$CMD_NAME $cmd_line"' > /opt/altera/13.0sp1/quartus/linux/quartus_asm && chmod +x opt/altera/13.0sp1/quartus/linux/quartus_asm; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_sta; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_sh; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_eda; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_pgm; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_pgmw; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mif2hex; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/alterad; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/altgx_diffmifgen; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/pll_cmd; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_fid; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_divideq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/xcvr_diffmifgen; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altdqsq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/jtagconfig; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/altgx_mifgen; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_alteccq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altiobufq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altparallel_flash_loaderq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/gnuplot; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altgxbq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/lmutil; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altfp_sqrtq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altfp_compareq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_muxq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altmemmultq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_hps; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/wish; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/tb2_sender; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altfp_sincosq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_multq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altfp_add_subq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_si; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qwedt; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/fir_netlist_writer; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_fitw; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qred; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qwed; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qt_example_app; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altmult_addq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altsource_probeq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_npp; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/dmf_ver; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_cdb; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_cpf; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/tb2_install; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qemit; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altfp_atanq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qatc; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_shiftregq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_counterq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_cmd; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qeslc; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_cvp; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altpll_reconfigq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/clearbox; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qmegawiz; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altint_oscq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_decodeq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altsld_virtual_jtagq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_add_subq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_csmq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qreg; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qppl; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_sld_signaltapq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_clshiftq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_jli; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_alt2gxb_reconfigq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altshift_tapsq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_sim; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qmegawizq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/lmgrd; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altclkbufq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/jtagd; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_jbcc; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_alt_octq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qfid; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_drc; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altremote_updateq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_ramq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_compareq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_stpw; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/uniphy_mcc; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_rpp; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qbnl; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_symc; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altsqrtq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altserial_flash_loaderq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qpgmt; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_alt_fault_injection; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qsme; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_staw; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_symcng; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/qnui; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/tclsh; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altfp_divq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_parallel_addq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_altpllq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/quartus_stp; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mw-regenerate; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/mega_lpm_constq; \
+        cp /opt/altera/13.0sp1/quartus/linux/quartus_asm /opt/altera/13.0sp1/quartus/linux/cbx_altfpc; \
+    fi
 
 # INSTALL oss-cad-suite
 RUN apt install -y zlib1g-dev ghostscript
 
 ### INSTALL CADENCE
 RUN apt install -y ksh csh libc6-amd64 evince
+
+# Patches
+RUN ln -s /usr/lib/x86_64-linux-gnu /usr/lib64 \
+    && ln -s /usr/lib/libchm.so.1 /usr/lib/libchm.so \
+    && ln -s /usr/bin/gcc /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/gcc_sys \
+    && mv /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++ /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++_bak \
+    && ln -s /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/gcc_sys /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++
 
 COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco
 COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
@@ -90,9 +211,28 @@ RUN chmod +x /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/
 
 # Install PDKs
 ADD backend/PDKs/gpdk045.tgz /opt/PDKs
+ADD backend/PDKs/FreePDK45.tgz /opt/PDKs
+ADD backend/PDKs/FreePDK15.tgz /opt/PDKs
+ADD backend/PDKs/cdk160.tgz /opt/PDKs
 COPY backend/PDKs/cds.lib /opt/cadence/IC617/share/cdssetup/cds.lib
+# Patch FreePDK45
+RUN sed -i 's/\$PDK_DIR/\/opt\/PDKs\/FreePDK45/g; /^[[:blank:]]*$/!s/$/'\''/' /opt/PDKs/FreePDK45/ncsu_basekit/models/hspice/hspice_nom.include
 
 ######### FINALIZE
+# Ultilities
+RUN apt install -y gpicview xarchiver iputils-ping clang
+
+# Install VSCode (amd64) only
+RUN if [ "${TARGETARCH}" = "amd64" ]; then \
+        apt install -y wget gpg; \
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg; \
+        install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg; \
+        sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'; \
+        rm -f packages.microsoft.gpg; \
+        apt install apt-transport-https && apt update; \
+        apt install -y code; \
+    fi
+
 # Add modules
 COPY frontend/modules /usr/share/modules/modulefiles
 COPY backend/modules /usr/share/modules/modulefiles
@@ -102,7 +242,8 @@ RUN mkdir /root/Desktop
 COPY Desktop/* /root/Desktop/
 COPY frontend/Desktop/* /root/Desktop/
 COPY backend/Desktop/* /root/Desktop/
-RUN find /root/Desktop -type f -exec chmod +x {} \; 
+RUN cp /usr/share/applications/code.desktop /root/Desktop/ 2>/dev/null || :
+RUN find /root/Desktop -type f -exec chmod +x {} \;
 
 # Create symbolic links for shared folders
 RUN mkdir /media/share \
@@ -121,7 +262,6 @@ RUN echo '[Configuration]' > /root/.config/xfce4/terminal/terminalrc \
 
 ARG VERSION=v1.0
 ARG BUILD_NUMBER=0
-ARG TARGETARCH
 
 # Add info.sh
 COPY info /bin
@@ -139,13 +279,9 @@ RUN chmod +x /usr/bin/run.sh
 # Set the root password
 RUN echo 'root:toor' | chpasswd
 
-# Remove apt caches and /tmp
-RUN rm -rf /var/cache/apt /var/lib/apt/lists
-RUN rm -rf /tmp/*
-
 ## This stage is used on mac"
 RUN if [ "${TARGETARCH}" = "mac" ]; then \
-        echo "TARGETARCH = mac"; \
+        echo "prepend-path PATH /opt/altera/13.0sp1/quartus/linux" | tee -a /usr/share/modules/modulefiles/quartus/13.0sp1; \
     ## This stage is used on amd64"
     else \ 
         sed -i '/-XX:ActiveProcessorCount=2/d' /opt/intelFPGA/22.1std/nios2eds/bin/eclipse_nios2/eclipse.ini; \
@@ -155,15 +291,20 @@ RUN if [ "${TARGETARCH}" = "mac" ]; then \
         sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/vivado; \
         sed -i 's/taskset -c 4-7 //' /usr/share/modules/modulefiles/vivado; \
         sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/quartus/22.1std; \
-        sed -i 's|Exec=/opt/altera/13.0sp1/quartus/bin/quartus|Exec=/opt/altera/13.0sp1/quartus/bin/quartus --64bit|' /root/Desktop/QuartusII.desktop; \
-        sed -i 's/(32-bit)/(64-bit)/g' /root/Desktop/QuartusII.desktop; \
-        echo 'set-alias quartus "quartus --64bit"' >> /usr/share/modules/modulefiles/quartus/13.0sp1; \
+        sed -i 's/Exec=\/bin\/bash -c "module load quartus\/13.0sp1 \&\& quartus"/Exec=\/bin\/bash -c "module load quartus\/13.0sp1 \&\& quartus --64bit"/' /root/Desktop/QuartusII.desktop; \
+        sed -i 's/Exec=\/bin\/bash -c "module load quartus\/13.0sp1 \&\& quartus_pgmw"/Exec=\/bin\/bash -c "module load quartus\/13.0sp1 \&\& quartus_pgmw --64bit"/' /root/Desktop/QuartusII.desktop; \
+        # sed -i 's/(32-bit)/(64-bit)/g' /root/Desktop/QuartusII.desktop; \
+        # echo 'set-alias quartus "quartus --64bit"' >> /usr/share/modules/modulefiles/quartus/13.0sp1; \
         sed -i 's/Apple Silicon Macs/x86_64 machines/' /bin/info; \
     fi
 
 # Add script for create user
 COPY newuser /bin
 RUN chmod +x /bin/newuser
+
+# Remove apt caches and /tmp
+RUN rm -rf /var/cache/apt /var/lib/apt/lists
+RUN rm -rf /tmp/*
 
 # Docker config
 EXPOSE 3389
