@@ -1,0 +1,19 @@
+#%Module1.0
+## Environment module for Intel EDS
+
+# Set working directory
+chdir /media/share
+
+# Set QUARTUS_ROOTDIR
+setenv QUARTUS_ROOTDIR /opt/intelFPGA/22.1std/quartus
+
+setenv SOCEDS_DEST_ROOT /opt/intelFPGA/20.1/embedded
+setenv SOCEDS_HWLIB /opt/intelFPGA/20.1/embedded/ip/altera/hps/altera_hps/hwlib
+
+# Update the PATH environment variable
+prepend-path PATH /opt/intelFPGA/20.1/embedded
+prepend-path PATH /opt/intelFPGA/20.1/embedded/host_tools/altera/preloadergen
+prepend-path PATH /opt/intelFPGA/20.1/embedded/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin
+
+# Module description
+module-whatis "Environment module for Intel EDS"

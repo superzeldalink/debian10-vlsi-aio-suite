@@ -8,6 +8,7 @@ ADD frontend/synopsys.tgz /usr
 ADD frontend/vivado.tgz /tools
 ADD frontend/quartus_13.tgz /opt
 ADD frontend/oss-cad-suite-linux-amd64-20231005.tgz /tools
+ADD frontend/eds.tgz /opt/intelFPGA
 
 RUN dpkg --add-architecture amd64 \
     && dpkg --add-architecture i386

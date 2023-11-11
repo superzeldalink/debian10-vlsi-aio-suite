@@ -30,7 +30,7 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 RUN apt install -y --no-install-recommends htop nano vim neovim tree locales mousepad git xterm tcl yad environment-modules firefox-esr
 
 ### INSTALL CADENCE
-RUN apt install -y ksh csh libc6-amd64 evince
+RUN apt install -y ksh csh libc6-amd64 evince psmisc
 
 # Patches
 RUN ln -s /usr/lib/x86_64-linux-gnu /usr/lib64 \
@@ -49,7 +49,13 @@ ADD backend/PDKs/gpdk045.tgz /opt/PDKs
 ADD backend/PDKs/FreePDK45.tgz /opt/PDKs
 ADD backend/PDKs/FreePDK15.tgz /opt/PDKs
 ADD backend/PDKs/cdk160.tgz /opt/PDKs
+ADD backend/PDKs/tsmc13.tgz /opt/PDKs
+ADD backend/PDKs/tsmc18.tgz /opt/PDKs
+ADD backend/PDKs/TSMCn65.tgz /opt/PDKs
+ADD backend/PDKs/Full_Flow_Lab_Lib_TSMC180_New.tgz /opt/PDKs
 COPY backend/PDKs/cds.lib /opt/cadence/IC617/share/cdssetup/cds.lib
+# Patch FreePDK45
+RUN sed -i 's/\$PDK_DIR/\/opt\/PDKs\/FreePDK45/g; /^[[:blank:]]*$/!s/$/'\''/' /opt/PDKs/FreePDK45/ncsu_basekit/models/hspice/hspice_nom.include
 
 ######### FINALIZE
 # Ultilities
