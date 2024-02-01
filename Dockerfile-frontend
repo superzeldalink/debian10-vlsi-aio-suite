@@ -3,9 +3,9 @@ FROM amd64/debian:buster-20230919-slim
 ENV DEBIAN_FRONTEND noninteractive
 
 ### COMMON
+ADD frontend/vivado.tgz /tools
 ADD frontend/quartus_22.1std.tgz /opt
 ADD frontend/synopsys.tgz /usr
-ADD frontend/vivado.tgz /tools
 ADD frontend/quartus_13.tgz /opt
 ADD frontend/oss-cad-suite-linux-amd64-20231005.tgz /tools
 ADD frontend/eds.tgz /opt/intelFPGA
@@ -73,6 +73,8 @@ RUN rm -f /usr/bin/sh && ln -s /usr/bin/bash /usr/bin/sh \
 
 ### INSTALL VIVADO
 RUN apt install -y libtinfo5 libxtst6 libasound2 libcom-err2 libkeyutils1 libpulse0 libqt5webenginewidgets5
+RUN mkdir /root/.Xilinx        
+COPY frontend/license.lic /root/.Xilinx
 
 ### INSTALL QUARTUS 13
 RUN apt install -y libc6:i386 libx11-6:i386 libxext6:i386 libxft2:i386 libncurses5:i386 libsm6:i386
@@ -80,9 +82,9 @@ RUN apt install -y libc6:i386 libx11-6:i386 libxext6:i386 libxft2:i386 libncurse
 ARG TARGETARCH
 RUN if [ "${TARGETARCH}" = "mac" ]; then \
         ## PATCH QUARTUS13
-        dpkg --add-architecture arm64; \
-        apt update; \
-        apt install -y qemu:arm64 binfmt-support:arm64 qemu-user-static:arm64; \
+        # dpkg --add-architecture arm64; \
+        # apt update; \
+        # apt install -y qemu:arm64 binfmt-support:arm64 qemu-user-static:arm64; \
         echo 'export CMD_NAME=`basename $0`; set -f; export cmd_line=""; for cmd in "$@"; do if test "$cmd" = "--64bit"; then export QUARTUS_64BIT=1; else cmd_line="$cmd_line \"$cmd\""; fi; done; eval exec "qemu-x86_64-static $(dirname $(which $CMD_NAME))/../linux64/$CMD_NAME $cmd_line"' > /opt/altera/13.0sp1/quartus/linux/quartus && chmod +x opt/altera/13.0sp1/quartus/linux/quartus; \
         cp /opt/altera/13.0sp1/quartus/linux/quartus /opt/altera/13.0sp1/quartus/linux/quartus_map; \       
         cp /opt/altera/13.0sp1/quartus/linux/quartus /opt/altera/13.0sp1/quartus/linux/quartus_fit; \
@@ -258,8 +260,8 @@ RUN if [ "${TARGETARCH}" = "mac" ]; then \
     ## This stage is used on amd64"
     else \ 
         sed -i '/-XX:ActiveProcessorCount=2/d' /opt/intelFPGA/22.1std/nios2eds/bin/eclipse_nios2/eclipse.ini; \
-        sed -i 's/taskset -c 0-3 //' /root/Desktop/Vivado2023.1.desktop; \
-        sed -i 's/taskset -c 4-7 //' /root/Desktop/VitisHLS2023.1.desktop; \
+        sed -i 's/taskset -c 0-3 //' /root/Desktop/Vivado2023.2.desktop; \
+        sed -i 's/taskset -c 4-7 //' /root/Desktop/VitisHLS2023.2.desktop; \
         sed -i 's/taskset -c 0-3 //' /root/Desktop/Quartus.desktop; \
         sed -i 's/taskset -c 0-3 //' /usr/share/modules/modulefiles/vivado; \
         sed -i 's/taskset -c 4-7 //' /usr/share/modules/modulefiles/vivado; \

@@ -1,0 +1,72 @@
+# Use the base image    
+FROM rockylinux/rockylinux:8.9
+
+# Copy files
+ADD frontend/synopsys.tgz /usr
+ADD frontend/quartus_22.1std.tgz /opt
+ADD frontend/quartus_13.tgz /opt
+ADD frontend/eds.tgz /opt/intelFPGA
+ADD frontend/vivado.tgz /tools
+ADD frontend/oss-cad-suite-linux-amd64-20231005.tgz /tools
+ADD backend/cadence.tgz /opt
+
+# DNF upgrade
+RUN dnf -y upgrade --refresh
+
+RUN dnf -y install epel-release && dnf --enablerepo=epel group; \
+    dnf -y install \
+        Thunar \
+        openssh-askpass \
+        thunar-archive-plugin \
+        thunar-volman \
+        tumbler \
+        xfce-polkit \
+        xfce4-appfinder \
+        xfce4-panel \
+        xfce4-session \
+        xfce4-settings \
+        xfce4-terminal \
+        xfconf \
+        xfdesktop \
+        xfwm4; \
+    dnf -y install xrdp xorgxrdp; \
+    dnf -y remove network-manager-applet xfce4-power-manager xfce4-screensaver NetworkManager-wifi upower
+
+RUN dnf -y install environment-modules git mlocate strace
+
+RUN bash -c 'echo PREFERRED=/usr/bin/xfce4-session > /etc/sysconfig/desktop'
+RUN rm -r /etc/xdg/autostart/xfce-polkit.desktop
+
+### Synopsys
+RUN mkdir -p /usr/local/flexlm/licenses/ \
+    && mkdir -p /usr/tmp/.flexlm
+
+# Install dependencies
+RUN dnf -y install redhat-lsb libXScrnSaver libnsl numactl-libs libpng12.x86_64 ncurses-compat-libs compat-libtiff3  libmng csh bc
+
+# Copy Synopsys license file and daemons
+COPY frontend/license.dat /usr/local/flexlm/licenses
+COPY frontend/daemons/mgcld /usr/synopsys/11.9/amd64/bin
+COPY frontend/libpng12.so.0.54.0 /usr/lib
+
+# Patches
+# RUN bash -c "if [ ! -e /lib64/ld-lsb-x86-64.so.3 ]; then ln -s ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3; fi" for rocky9
+RUN ln -s /usr/lib64/libmng.so.2 /usr/lib64/libmng.so.1
+
+### VIVADO
+RUN dnf -y installl glibc-langpack-en
+
+# Add modules
+COPY frontend/modules /usr/share/Modules/modulefiles
+COPY backend/modules /usr/share/Modules/modulefiles
+
+# Copy a custom script and set it as the entry point
+COPY ./run-rocky.sh /usr/bin/run.sh
+RUN chmod +x /usr/bin/run.sh
+
+# RUn dnf -y autoremove; \
+#     dnf -y clean all;
+
+# Docker config
+EXPOSE 3389
+ENTRYPOINT ["/usr/bin/run.sh"]

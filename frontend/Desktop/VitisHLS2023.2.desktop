@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
-Name=Vitis HLS 2023.1
-Comment=Vitis HLS 2023.1
-Icon=/tools/Xilinx/Vitis_HLS/2023.1/doc/images/vitis_hls_icon.png
+Name=Vitis HLS 2023.2
+Comment=Vitis HLS 2023.2
+Icon=/tools/Xilinx/Vitis_HLS/2023.2/doc/images/vitis_hls_icon.png
 Exec=/bin/bash -c "module load vivado && taskset -c 4-7 vitis_hls"
-Path=/media/share
+Path=$HOME
 Terminal=false
 StartupNotify=false

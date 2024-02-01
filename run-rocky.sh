@@ -50,6 +50,8 @@ echo root:$PASSWD | chpasswd
 echo Entryponit script is Running...
 echo
 
+startxfce4 &
+
 echo "export LD_LIBRARY_PATH=/usr/lib" >> /root/.bashrc
 echo "source /etc/profile.d/modules.sh" >> /root/.bashrc
 echo "alias ls='ls $LS_OPTIONS'" >> /root/.bashrc

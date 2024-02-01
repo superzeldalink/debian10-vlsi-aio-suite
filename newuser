@@ -44,6 +44,10 @@ config_others() {
         && echo "LICENSE_FILE = LM_LICENSE_FILE" >> /home/$new_username/.altera.quartus/quartus2.ini
     chown -R $new_username:$new_username /home/$new_username/.altera.quartus
 
+    mkdir /home/$new_username/.Xilinx \
+        && cp -r /root/.Xilinx/license.lic /home/$new_username/.Xilinx/license.lic
+    chown -R $new_username:$new_username /home/$new_username/.Xilinx
+
     mkdir -p /home/$new_username/.config/libfm \
         && echo '[config]' > /home/$new_username/.config/libfm/libfm.conf \
         && echo 'quick_exec = 1' >> /home/$new_username/.config/libfm/libfm.conf

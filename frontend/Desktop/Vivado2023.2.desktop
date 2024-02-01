@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
-Name=Vivado 2023.1
-Comment=Vivado 2023.1
-Icon=/tools/Xilinx/Vivado/2023.1/doc/images/vivado_logo.png
+Name=Vivado 2023.2
+Comment=Vivado 2023.2
+Icon=/tools/Xilinx/Vivado/2023.2/doc/images/vivado_logo.png
 Exec=/bin/bash -c "module load vivado && taskset -c 0-3 vivado"
-Path=/media/share
+Path=$HOME
 Terminal=false
 StartupNotify=false

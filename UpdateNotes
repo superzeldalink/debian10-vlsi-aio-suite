@@ -14,3 +14,4 @@ v2.02 - 151023: Added newuser script for adding user
 v2.05 - 241023: Patched QuartusII for Apple Silicon
 v2.06 - 271023: Added VSCode (amd64), image viewer, archive viewer
 v2.07 - 271023: Replace QuartusII Web edition by Subscription edition
+v2.10 - 160124: Updated Vivado to 2023.2 Enterprise Edition (Artix 7 + Kintex 7)

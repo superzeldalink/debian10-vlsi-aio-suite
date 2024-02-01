@@ -6,4 +6,4 @@ Comment=Intel Quartus Prime Standard 22.1
 Icon=/opt/intelFPGA/22.1std/quartus/adm/quartusii.png
 Exec=env LM_LICENSE_FILE=/opt/intelFPGA/22.1std/quartus/license.dat:27000@127.0.0.1 taskset -c 0-3 /opt/intelFPGA/22.1std/quartus/bin/quartus --64bit
 Terminal=false
-Path=/media/share
+Path=$HOME
