@@ -20,12 +20,14 @@ v2.02 - 151023: Added newuser script for adding user
 v2.05 - 241023: Patched QuartusII for Apple Silicon
 v2.06 - 271023: Added VSCode (amd64), image viewer, archive viewer
 v2.07 - 271023: Replace QuartusII Web edition by Subscription edition
-v2.10 - 160124: Updated Vivado to 2023.2 Enterprise Edition (Artix 7 + Kintex 7)"
+v2.10 - 160124: Updated Vivado to 2023.2 Enterprise Edition (Artix 7 + Kintex 7)
+v2.15 - 060324: Added Vitis Unified 2023.2"
 
 # Define the tool information
 tools=("Quartus Prime + QuestaSim|22.1std|module load quartus/22.1std"
        "Quartus II + ModelSim|13.0sp1|module load quartus/13.0sp1"
-       "Vivado ML Standard Edition|2023.1|module load vivado"
+       "Vivado ML Enterprise Edition|2023.2|module load vivado"
+       "Vitis Unified IDE|2023.2|module load vitis"
        "oss-cad-suite|20231005|module load oss-cad-suite"
        "      Yosys|0.33+112k| "
        "      Cocotb|1.9.0.dev0| "

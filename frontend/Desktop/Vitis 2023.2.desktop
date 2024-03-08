@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Vitis 2023.2
+Comment=Vitis 2023.2
+Icon=/tools/Xilinx/Vitis/2023.2/ide/electron-app/lnx64/resources/app/resources/icons/vitis-logo-latest.png
+Exec=/bin/bash -c "module load vitis && vitis"

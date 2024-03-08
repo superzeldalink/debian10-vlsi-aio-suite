@@ -12,4 +12,4 @@ set-alias docnav "/tools/Xilinx/DocNav/docnav --no-sandbox"
 setenv LD_PRELOAD /usr/lib/x86_64-linux-gnu/libtcmalloc.so.4:/lib/x86_64-linux-gnu/libudev.so.1:/lib/x86_64-linux-gnu/libselinux.so.1:/lib/x86_64-linux-gnu/libc.so.6
 
 # Module description
-module-whatis "Environment module for Xilinx Vivado and Vitis"
+module-whatis "Environment module for Xilinx Vivado and Vitis HLS"

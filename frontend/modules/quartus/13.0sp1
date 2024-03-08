@@ -1,9 +1,6 @@
 #%Module1.0
 ## Environment module for Quartus Prime 13.0 SP1 Web Edition
 
-# Set working directory
-chdir /media/share
-
 # Set the license file location
 setenv LM_LICENSE_FILE /opt/altera/13.0sp1/quartus/license.dat
 

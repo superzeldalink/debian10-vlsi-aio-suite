@@ -64,12 +64,9 @@ RUN apt install -y gpicview xarchiver iputils-ping
 # Install VSCode (amd64) only
 RUN if [ "${TARGETARCH}" = "amd64" ]; then \
         apt install -y wget gpg; \
-        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg; \
-        install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg; \
-        sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'; \
-        rm -f packages.microsoft.gpg; \
-        apt install apt-transport-https && apt update; \
-        apt install -y code; \
+        wget -qP https://packages.microsoft.com/repos/vscode/pool/main/c/code/code_1.85.2-1705561292_amd64.deb; \
+        apt install -y /tmp/code_1.85.2-1705561292_amd64.deb; \
+        rm -rf /tmp/code_1.85.2-1705561292_amd64.deb; \
     fi
 
 # Add modules
