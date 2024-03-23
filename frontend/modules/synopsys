@@ -10,6 +10,8 @@ setenv VC_STATIC_HOME /usr/synopsys/vc_static-O-2018.09-SP2-2
 setenv VCS_HOME /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/
 setenv SYNOPSYS /usr/synopsys/fm-O-2018.06-SP1/
 setenv VERDI_HOME /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi
+setenv SPYGLASS_HOME /usr/synopsys/SpyGlass-L2016.06/SPYGLASS_HOME
+setenv SYN_HOMEDIR /usr/synopsys/fpga-L-2016.03-SP1
 
 # Set architecture-related variables
 setenv VCS_ARCH_OVERRIDE linux
@@ -28,6 +30,8 @@ prepend-path PATH /usr/synopsys/dc-L-2016.03-SP1/amd64/syn/bin
 prepend-path PATH /usr/synopsys/vc_static-O-2018.09-SP2-2/verdi/bin
 prepend-path PATH /usr/synopsys/vc_static-O-2018.09-SP2-2/vcs-mx/bin
 prepend-path PATH /usr/synopsys/vc_static-O-2018.09-SP2-2/bin
+prepend-path PATH /usr/synopsys/SpyGlass-L2016.06/SPYGLASS_HOME/bin
+prepend-path PATH /usr/synopsys/fpga-L-2016.03-SP1/bin
 
 # Create an alias
 set-alias dv "design_vision"

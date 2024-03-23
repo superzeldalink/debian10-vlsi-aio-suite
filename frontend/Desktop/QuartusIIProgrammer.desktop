@@ -4,6 +4,6 @@ Version=0.9.4
 Name=Programmer 13.0sp1
 Comment=Programmer 13.0sp1
 Icon=/opt/altera/13.0sp1/quartus/adm/quartusii.png
-Exec=/bin/bash -c "module load quartus/13.0sp1 && quartus_pgmw"
+Exec=/bin/bash -c "module load quartus/13.0sp1 && quartus_pgmw --64bit"
 Terminal=false
 Path=$HOME

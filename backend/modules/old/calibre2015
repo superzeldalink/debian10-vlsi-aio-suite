@@ -2,15 +2,15 @@
 ## Environment module for Synopsys tools
 
 # Update the PATH environment variable
-append-path PATH /opt/mentor/calibre2021/aoi_cal_2021.2_28.15/bin
+append-path PATH /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/bin
 
-setenv MGLS_LICENSE_FILE /opt/mentor/calibre2021/license.dat
+setenv MGLS_LICENSE_FILE /opt/mentor/license/license.dat
 setenv MGC_CALIBRE_LAYOUT_SERVER 127.0.0.1:9189
 setenv LANG C
 setenv QRC_MOS_LW_PRECISION Y
 setenv CDS_LIC_ONLY 1
 setenv CDS_Netlisting_Mode Analog
-setenv MGC_LIB_PATH /opt/mentor/calibre2021/aoi_cal_2021.2_28.15/lib
+setenv MGC_LIB_PATH /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/lib
 setenv MGC_HOME /opt/mentor
 setenv CDS_ENABLE_VMS 1
 setenv W3264_NO_HOST_CHECK 1
@@ -21,8 +21,7 @@ setenv MGC_CALIBRE_SAVE_ALL_RUNSET_VALUES 1
 setenv MGC_CALIBRE_SCHEMATIC_SERVER 127.0.0.1:9199
 setenv SHLVL 1
 setenv MGC_PDF_READER evince
-setenv CALIBRE_HOME /opt/mentor/calibre2021/aoi_cal_2021.2_28.15
-setenv MGC_LICENSE_FILE /opt/mentor/license/license.dat
+setenv CALIBRE_HOME /opt/mentor/calibre2015/aoi_cal_2015.2_36.27
 setenv MOZILLA_HOME /usr/bin/firefox
 setenv CDS_LOAD_ENV CWD
 setenv CALIBRE_DISABLE_SSE_CHECK YES

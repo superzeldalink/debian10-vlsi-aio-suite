@@ -1,0 +1,25 @@
+#%Module1.0
+## Environment module for Genus tools
+
+prepend-path PATH /opt/cadence/GENUS191/tools/bin
+
+setenv CADENCE_VIP_LIC_ORDER newrev:soc:portfolio:alacarte
+setenv LANG C
+setenv QRC_MOS_LW_PRECISION Y
+setenv CDS_LIC_ONLY 1
+setenv CDS_Netlisting_Mode Analog
+setenv CDS_ENABLE_VMS 1
+setenv W3264_NO_HOST_CHECK 1
+setenv OA_UNSUPPORTED_PLAT linux_rhel50_gcc48x
+setenv CADHOME /opt/cadence
+setenv TERM xterm
+setenv CDS_AUTO_64BIT ALL
+setenv SHLVL 1
+setenv MGC_PDF_READER evince
+setenv MOZILLA_HOME /usr/bin/firefox
+setenv CDS_LOAD_ENV CWD
+
+prepend-path CDS_LIC_FILE /opt/cadence/GENUS191/share/license/license.dat
+
+# Module description
+module-whatis "Environment module for Genus tools"

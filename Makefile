@@ -38,7 +38,8 @@ update-build-file:
 # Build the Docker image with the build number as an argument
 build: update-build-file
 	docker build -f $(DOCKERFILE) --build-arg="TARGETARCH=$(TARGET_ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t $(IMAGE_NAME) .
-
+build-new: update-build-file
+	docker build -f $(DOCKERFILE) --build-arg="TARGETARCH=$(TARGET_ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -t docker.linkclouds.top/debian10-vlsi-$(SUITE)-suite:latest .
 rebuild:
 	docker build -f $(DOCKERFILE) --build-arg="TARGETARCH=$(TARGET_ARCH)" --build-arg="VERSION=$(VERSION)" --build-arg="BUILD_NUMBER=$(NEW_BUILD_NUMBER)" -m=4g -t $(IMAGE_NAME) .
 
@@ -53,10 +54,12 @@ stop-production:
 
 # Run a container from the newly built image
 run-production: stop-production
-	docker run -it -d --hostname vlsi --privileged --shm-size=1G --name vlsi-production --mac-address 02:42:ac:11:00:02 -p 3999:3389 -v /home/link/Documents/VLSIServer/Data:/media/share -v /home/link/Documents/VLSIServer/Users:/home $(IMAGE_NAME) $(ROOT_PASSWD)
+	docker run -it -d --hostname vlsi --privileged --shm-size=1G --name vlsi-production --mac-address 02:42:ac:11:00:02 -p $(RDP_PORT):3389 -v /mnt/VLSIServer/Data:/media/share -v /mnt/VLSIServer/Users:/home $(IMAGE_NAME) $(ROOT_PASSWD)
 
 run: stop-container
-	docker run -it -d --hostname link --privileged --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(RDP_PORT):3389 -v /mnt/docs/SharedVM:/media/share $(IMAGE_NAME) $(ROOT_PASSWD)
+	docker run -it -d --hostname link --privileged --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(RDP_PORT):3389 -v /mnt/docs/SharedVM/TestServer:/media/share -v /mnt/EDA:/media/EDA $(IMAGE_NAME) $(ROOT_PASSWD)
+run-new:
+	docker run -it -d --hostname link --privileged --name $(SUITE)-suite-new --mac-address 02:42:ac:11:00:02 -p $(RDP_PORT):3389 -v /mnt/docs/SharedVM/TestServer:/media/share -v /mnt/EDA:/media/EDA docker.linkclouds.top/debian10-vlsi-$(SUITE)-suite:latest $(ROOT_PASSWD)
 run-vnc: stop-container
 	docker run -it -d --hostname link --name $(SUITE)-suite --mac-address 02:42:ac:11:00:02 -p $(VNC_PORT):5900 -p 5901:5901 -v /Users/link/Documents/SharedVM:/media/share $(IMAGE_NAME) $(ROOT_PASSWD) vnc
 run-ssh: stop-container

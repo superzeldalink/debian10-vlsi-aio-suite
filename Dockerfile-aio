@@ -3,14 +3,19 @@ FROM amd64/debian:buster-20230919-slim
 ENV DEBIAN_FRONTEND noninteractive
 
 ### COMMON
-ADD frontend/vivado.tgz /tools
 ADD frontend/quartus_22.1std.tgz /opt
-ADD frontend/synopsys.tgz /usr
 ADD frontend/quartus_13.tgz /opt
-ADD frontend/oss-cad-suite-linux-amd64-20231005.tgz /tools
-ADD backend/cadence.tgz /opt
 ADD frontend/eds.tgz /opt/intelFPGA
+ADD frontend/vivado.tgz /tools
 ADD frontend/vitis.tgz /tools/Xilinx
+ADD frontend/synopsys.tgz /usr
+ADD frontend/xcelium.tgz /opt/cadence
+ADD frontend/genus.tgz /opt/cadence
+ADD frontend/innovus.tgz /opt/cadence
+ADD frontend/oss-cad-suite-linux-amd64-20231005.tgz /tools
+ADD backend/virtuoso_spectre.tgz /opt/cadence
+ADD backend/calibre.tgz /opt/mentor
+ADD frontend/jasper.tgz /opt/cadence
 
 RUN dpkg --add-architecture amd64 \
     && dpkg --add-architecture i386
@@ -29,7 +34,7 @@ RUN echo 'PermitRootLogin Yes' >> /etc/ssh/sshd_config \
     && echo 'X11DisplayOffset 10' >> /etc/ssh/sshd_config \
     && echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
 
-RUN apt install -y --no-install-recommends gcc cmake make libc6-dev g++
+RUN apt install -y --no-install-recommends gcc gcc-multilib cmake make libc6-dev g++ csh ksh
 
 # Install additional utilities and locales
 RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
@@ -50,7 +55,7 @@ RUN mkdir -p /usr/local/flexlm/licenses/ \
     && mkdir -p /usr/tmp/.flexlm
 
 # Install dependencies
-RUN apt install -y libncurses5 libmng1 csh dc \
+RUN apt install -y libncurses5 libmng1 dc \
     libstdc++6 libxss1 libxt6 libxmu6 libnuma1 libxi6 libxrandr2 libtiff5 libgl1
 
 # Copy Synopsys license file and daemons
@@ -74,7 +79,7 @@ RUN rm -f /usr/bin/sh && ln -s /usr/bin/bash /usr/bin/sh \
     && rm -f /bin/sh && ln -s /bin/bash /bin/sh
 
 ### INSTALL VIVADO
-RUN apt install -y libtinfo5 libxtst6 libasound2 libcom-err2 libkeyutils1 libpulse0 libqt5webenginewidgets5
+RUN apt install -y libtinfo5 libxtst6 libasound2 libcom-err2 libkeyutils1 libpulse0 libqt5webenginewidgets5 google-perftools
 RUN mkdir /root/.Xilinx
 COPY frontend/license.lic /root/.Xilinx
 
@@ -199,20 +204,24 @@ RUN if [ "${TARGETARCH}" = "mac" ]; then \
 RUN apt install -y zlib1g-dev ghostscript
 
 ### INSTALL CADENCE
-RUN apt install -y ksh csh libc6-amd64 evince psmisc
+RUN apt install -y ksh csh libc6-amd64 libaprutil1 evince psmisc
 
 # Patches
 RUN ln -s /usr/lib/x86_64-linux-gnu /usr/lib64 \
-    && ln -s /usr/lib/libchm.so.1 /usr/lib/libchm.so \
-    && ln -s /usr/bin/gcc /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/gcc_sys \
-    && mv /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++ /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++_bak \
-    && ln -s /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/gcc_sys /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++
+    && ln -s /usr/lib/libchm.so.1 /usr/lib/libchm.so
+#     && ln -s /usr/bin/gcc /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/gcc_sys \
+#     && mv /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++ /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++_bak \
+#     && ln -s /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/gcc_sys /opt/cadence/MMSIM151/tools.lnx86/cdsgcc/gcc/4.8/bin/g++
 
-COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco
-COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
+# COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco
+# COPY backend/cadence_vco.sh /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
 
-RUN chmod +x /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
+# RUN chmod +x /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base/bin/calibre_vco /opt/mentor/calibre2015/aoi_cal_2015.2_36.27/pkgs/calibre_base.aoi/bin/calibre_vco
+### Virtuoso IC231 patch
+RUN ln -s /usr/lib/x86_64-linux-gnu/libsasl2.so.2 /usr/lib/x86_64-linux-gnu/libsasl2.so.3
 
+### Innovus patch
+RUN ln -s /usr/lib/x86_64-linux-gnu/libXpm.so.4.11.0 /usr/lib/x86_64-linux-gnu/libXp.so.6
 # Install PDKs
 ADD backend/PDKs/gpdk045.tgz /opt/PDKs
 ADD backend/PDKs/FreePDK45.tgz /opt/PDKs
@@ -222,7 +231,9 @@ ADD backend/PDKs/tsmc13.tgz /opt/PDKs
 ADD backend/PDKs/tsmc18.tgz /opt/PDKs
 ADD backend/PDKs/TSMCn65.tgz /opt/PDKs
 ADD backend/PDKs/Full_Flow_Lab_Lib_TSMC180_New.tgz /opt/PDKs
-COPY backend/PDKs/cds.lib /opt/cadence/IC617/share/cdssetup/cds.lib
+ADD backend/PDKs/SAED14nm.tgz /opt/PDKs
+ADD backend/PDKs/SAED32nm.tgz /opt/PDKs
+COPY backend/PDKs/cds.lib /opt/cadence/IC231/share/cdssetup/cds.lib
 # Patch FreePDK45
 RUN sed -i 's/\$PDK_DIR/\/opt\/PDKs\/FreePDK45/g; /^[[:blank:]]*$/!s/$/'\''/' /opt/PDKs/FreePDK45/ncsu_basekit/models/hspice/hspice_nom.include
 
@@ -233,7 +244,7 @@ RUN apt install -y gpicview xarchiver iputils-ping clang
 # Install VSCode (amd64) only
 RUN if [ "${TARGETARCH}" = "amd64" ]; then \
         apt install -y wget gpg; \
-        wget -qP https://packages.microsoft.com/repos/vscode/pool/main/c/code/code_1.85.2-1705561292_amd64.deb; \
+        wget -qP /tmp https://packages.microsoft.com/repos/vscode/pool/main/c/code/code_1.85.2-1705561292_amd64.deb; \
         apt install -y /tmp/code_1.85.2-1705561292_amd64.deb; \
         rm -rf /tmp/code_1.85.2-1705561292_amd64.deb; \
     fi
@@ -276,6 +287,15 @@ RUN chmod +x /bin/info
 RUN sed -i "s/;;VERSION/$VERSION/" /bin/info \
     && sed -i "s/;;BUILD_NUMBER/$BUILD_NUMBER/" /bin/info \
     && sed -i "s/;;BuiltAt/TXT+=\"\\\tBuilt at $(date)\\\n\\\n\"/g" /bin/info
+
+# Add script for restarting Synopsys LM
+COPY frontend/syn_lm_start /bin
+RUN chmod +x /bin/syn_lm_start
+
+# Add script for checking Synopsys LM
+COPY frontend/syn_lm_check /bin
+COPY frontend/syn_lm_check_autostart.desktop /etc/xdg/autostart
+RUN chmod +x /bin/syn_lm_check
 
 # Copy a custom script and set it as the entry point
 COPY ./run.sh /usr/bin/run.sh

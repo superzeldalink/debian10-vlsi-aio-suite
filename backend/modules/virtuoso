@@ -2,39 +2,44 @@
 ## Environment module for Virtuoso tools
 
 # Update the PATH environment variable
-append-path PATH /opt/cadence/IC617/tools/dfII/bin
-append-path PATH /opt/cadence/IC617/tools/plot/bin
+prepend-path PATH /opt/cadence/IC231/tools/dfII/bin
+prepend-path PATH /opt/cadence/IC231/tools/plot/bin
 
-append-path SPECMAN_PATH /opt/cadence/IC617/tools/dfII/bin
-append-path SPECMAN_PATH /opt/cadence/IC617/tools/plot/bin
+prepend-path LD_LIBRARY_PATH /opt/cadence/IC231/tools.lnx86/lib/64bit/RHEL/RHEL9
 
-setenv OA_HOME /opt/cadence/IC617/oa_v22.50.036
-setenv XKEYSYMDB /opt/cadence/IC617/tools/plot/etc/XKeysymDB
+prepend-path SPECMAN_PATH /opt/cadence/IC231/tools/dfII/bin
+prepend-path SPECMAN_PATH /opt/cadence/IC231/tools/plot/bin
+
+setenv OA_HOME /opt/cadence/IC231/oa_v22.61.003
+setenv XKEYSYMDB /opt/cadence/IC231/tools/plot/etc/XKeysymDB
 setenv CADENCE_VIP_LIC_ORDER newrev:soc:portfolio:alacarte
 setenv LANG C
 setenv QRC_MOS_LW_PRECISION Y
 setenv CDS_LIC_ONLY 1
 setenv CDS_Netlisting_Mode Analog
 setenv CDS_ENABLE_VMS 1
-setenv CDS_ROOT /opt/cadence/IC617
-setenv CDS_INST_DIR /opt/cadence/IC617
-setenv CDSDIR /opt/cadence/IC617
-setenv CDSHOME /opt/cadence/IC617
+setenv CDS_ROOT /opt/cadence/IC231
+setenv CDS_INST_DIR /opt/cadence/IC231
+setenv CDSDIR /opt/cadence/IC231
+setenv CDSHOME /opt/cadence/IC231
 setenv W3264_NO_HOST_CHECK 1
 setenv OA_UNSUPPORTED_PLAT linux_rhel50_gcc48x
 setenv CADHOME /opt/cadence
-setenv CDS_LIC_FILE /opt/cadence/IC617/share/license/license.dat
+setenv CDS_LIC_FILE /opt/cadence/IC231/share/license/license.dat
 setenv TERM xterm
-setenv LM_LICENSE_FILE /opt/cadence/IC617/share/license/license.dat
 setenv CDS_AUTO_64BIT ALL
-setenv CADENCE_DIR /opt/cadence/IC617
+setenv CADENCE_DIR /opt/cadence/IC231
 setenv SHLVL 1
-setenv CDSROOT /opt/cadence/IC617
-setenv CDS /opt/cadence/IC617
+setenv CDSROOT /opt/cadence/IC231
+setenv CDS /opt/cadence/IC231
 setenv MGC_PDF_READER evince
 setenv MOZILLA_HOME /usr/bin/firefox
 setenv CDS_LOAD_ENV CWD
-setenv SYSTEM_CDS_LIB_DIR /opt/cadence/IC617/share/cdssetup
+setenv SYSTEM_CDS_LIB_DIR /opt/cadence/IC231/share/cdssetup
+setenv TOOLS_DIR /opt/cadence/IC231/tools
+setenv TOOLS_BINDIR /opt/cadence/IC231/tools/bin
+
+prepend-path CDS_LIC_FILE /opt/cadence/IC231/share/license/license.dat
 
 # Module description
 module-whatis "Environment module for Virtuoso tools"

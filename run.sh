@@ -26,7 +26,6 @@ start_vnc_services() {
     /usr/bin/startlxde &
     sleep 1
 
-
     openssl req -new -x509 -days 36500 -nodes -batch -out /root/noVNC.pem -keyout /root/noVNC.pem
     ln -sf /usr/share/novnc/vnc.html /usr/share/novnc/index.html
     websockify -D --web=/usr/share/novnc/ --cert=/root/novnc.pem 5901 0.0.0.0:5900
@@ -57,7 +56,8 @@ echo "alias ll='ls $LS_OPTIONS -l'" >> /root/.bashrc
 echo "alias l='ls $LS_OPTIONS -lA'" >> /root/.bashrc
 
 cp -r /lib/terminfo/* /usr/share/terminfo/ 2> /dev/null
-/usr/synopsys/11.9/amd64/bin/lmgrd -c /usr/local/flexlm/licenses/license.dat >> /root/startup_run.log
+
+# /usr/synopsys/11.9/amd64/bin/lmgrd -c /usr/local/flexlm/licenses/license.dat >> /root/startup_run.log
 
 # Loop through all script arguments
 for arg in "$@"; do

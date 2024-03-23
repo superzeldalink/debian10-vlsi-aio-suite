@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Info
+Exec=/bin/syn_lm_check
+Terminal=false
+Type=Application
+X-GNOME-Autostart-enabled=true

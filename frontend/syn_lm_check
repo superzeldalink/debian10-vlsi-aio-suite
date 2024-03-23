@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Check if lmgrd process is running
+if pgrep -x "lmgrd" >/dev/null
+then
+    echo "lmgrd process is running."
+else
+    # If lmgrd process is not running, display a styled dialog box
+    yad --title="Alert" \
+        --text="Synopsys License Manager is not running!\nPlease contact the administrators to run \"syn_lm_start\" command!" \
+        --image="dialog-warning" \
+        --button="OK:0" \
+        --width=300 \
+        --height=50 \
+        --center
+fi

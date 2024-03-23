@@ -19,12 +19,21 @@ v2.05 - 241023: Patched QuartusII for Apple Silicon
 v2.06 - 271023: Added VSCode (amd64), image viewer, archive viewer
 v2.07 - 271023: Replace QuartusII Web edition by Subscription edition
 v2.10 - 160124: Updated Vivado to 2023.2 Enterprise Edition (Artix 7 + Kintex 7)
-v2.15 - 060324: Added Vitis Unified 2023.2""
+v2.15 - 060324: Added Vitis Unified 2023.2
+v2.20 - 180324: Added Cadence Xcelium, Genus, Innovus, Synopsys SpyGlass
+v2.30 - 200324: Fixed uvmgen; Added Synopsys Synplify; Updated Cadence Xcelium, Genus, Virtuoso, Spectre, Mentor Calibre to newer version"
 
 # Define the tool information
-tools=("Cadence Virtuoso|IC6.1.7-64b.78|module load virtuoso"
-       "Cadence MMSIM|15.1|module load mmsim"
-       "Mentor Calibre|2015.2_36.27|module load calibre")
+tools=("Cadence| | "
+       "      Virtuoso|IC23.10.000|module load virtuoso"
+       "      Spectre|23.10.063|module load spectre"
+       "Mentor Calibre|2021.2_28.15|module load calibre"
+       "PDKs| | "
+       "      TSMC|13nm, 18nm, 65nm, 180nm| "
+       "      FreePDK|15nm, 45nm| "
+       "      SAED|14nm, 32nm| "
+       "      GPDK|45nm| "
+       "      NCSU CDK| | ")
 
 function show_mod_info {
   TXT="\\n<span face='Monospace'>$(modinfo $1 | sed 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g')</span>"

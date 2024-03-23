@@ -19,12 +19,14 @@ v2.05 - 241023: Patched QuartusII for Apple Silicon
 v2.06 - 271023: Added VSCode (amd64), image viewer, archive viewer
 v2.07 - 271023: Replace QuartusII Web edition by Subscription edition
 v2.10 - 160124: Updated Vivado to 2023.2 Enterprise Edition (Artix 7 + Kintex 7)
-v2.15 - 060324: Added Vitis Unified 2023.2""
+v2.15 - 060324: Added Vitis Unified 2023.2
+v2.20 - 180324: Added Cadence Xcelium, Genus, Innovus, Synopsys SpyGlass
+v2.30 - 200324: Fixed uvmgen; Added Synopsys Synplify; Updated Cadence Xcelium, Genus, Virtuoso, Spectre, Mentor Calibre to newer version"
 
 # Define the tool information
 tools=("Quartus Prime + QuestaSim|22.1std|module load quartus/22.1std"
        "Quartus II + ModelSim|13.0sp1|module load quartus/13.0sp1"
-       "Vivado ML Enterprise Edition|2023.2|module load vivado"
+       "Vivado ML Enterprise|2023.2|module load vivado"
        "Vitis Unified IDE|2023.2|module load vitis"
        "oss-cad-suite|20231005|module load oss-cad-suite"
        "      Yosys|0.33+112k| "
@@ -32,7 +34,7 @@ tools=("Quartus Prime + QuestaSim|22.1std|module load quartus/22.1std"
        "      Verilator|5.017| "
        "      GTKWave|3.4.0| "
        "      Icarus Verilog|13.0| "
-       "      ...| | "
+       "      And more...| | "
        "Synopsys| |module load synopsys"
        "      Design Compiler|L-2016.03-SP1| "
        "      VCS MX|O-2018.09-SP2-2| "
@@ -43,7 +45,13 @@ tools=("Quartus Prime + QuestaSim|22.1std|module load quartus/22.1std"
        "      PrimeTime|M-2016.12-SP1| "
        "      IC Compiler|L-2016.03-SP1| "
        "      HSPICE|L-2016.06-SP1| "
-       "      CustomExplorer|K-2015.06| ")
+       "      CustomExplorer|K-2015.06| "
+       "      SpyGlass|L-2016.06-SP1| "
+       "      Synplify|L-2016.06-SP1| "
+       "Cadence| | "
+       "      Xcelium|23.03.007|module load xcelium"
+       "      Genus|19.11-s087_1|module load genus"
+       "      Innovus|20.10.000|module load innovus")
 
 function show_mod_info {
   TXT="\\n<span face='Monospace'>$(modinfo $1 | sed 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g')</span>"

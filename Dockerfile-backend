@@ -22,7 +22,7 @@ RUN echo 'PermitRootLogin Yes' >> /etc/ssh/sshd_config \
     && echo 'X11DisplayOffset 10' >> /etc/ssh/sshd_config \
     && echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
 
-RUN apt install -y --no-install-recommends gcc cmake make libc6-dev g++
+RUN apt install -y --no-install-recommends gcc gcc-multilib cmake make libc6-dev g++
 
 # Install additional utilities and locales
 RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
@@ -53,6 +53,8 @@ ADD backend/PDKs/tsmc13.tgz /opt/PDKs
 ADD backend/PDKs/tsmc18.tgz /opt/PDKs
 ADD backend/PDKs/TSMCn65.tgz /opt/PDKs
 ADD backend/PDKs/Full_Flow_Lab_Lib_TSMC180_New.tgz /opt/PDKs
+ADD backend/PDKs/SAED14nm.tgz /opt/PDKs
+ADD backend/PDKs/SAED32nm.tgz /opt/PDKs
 COPY backend/PDKs/cds.lib /opt/cadence/IC617/share/cdssetup/cds.lib
 # Patch FreePDK45
 RUN sed -i 's/\$PDK_DIR/\/opt\/PDKs\/FreePDK45/g; /^[[:blank:]]*$/!s/$/'\''/' /opt/PDKs/FreePDK45/ncsu_basekit/models/hspice/hspice_nom.include

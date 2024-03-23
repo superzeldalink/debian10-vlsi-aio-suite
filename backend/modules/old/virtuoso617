@@ -1,0 +1,41 @@
+#%Module1.0
+## Environment module for Virtuoso tools
+
+# Update the PATH environment variable
+prepend-path PATH /opt/cadence/IC617/tools/dfII/bin
+prepend-path PATH /opt/cadence/IC617/tools/plot/bin
+
+prepend-path SPECMAN_PATH /opt/cadence/IC617/tools/dfII/bin
+prepend-path SPECMAN_PATH /opt/cadence/IC617/tools/plot/bin
+
+setenv OA_HOME /opt/cadence/IC617/oa_v22.50.036
+setenv XKEYSYMDB /opt/cadence/IC617/tools/plot/etc/XKeysymDB
+setenv CADENCE_VIP_LIC_ORDER newrev:soc:portfolio:alacarte
+setenv LANG C
+setenv QRC_MOS_LW_PRECISION Y
+setenv CDS_LIC_ONLY 1
+setenv CDS_Netlisting_Mode Analog
+setenv CDS_ENABLE_VMS 1
+setenv CDS_ROOT /opt/cadence/IC617
+setenv CDS_INST_DIR /opt/cadence/IC617
+setenv CDSDIR /opt/cadence/IC617
+setenv CDSHOME /opt/cadence/IC617
+setenv W3264_NO_HOST_CHECK 1
+setenv OA_UNSUPPORTED_PLAT linux_rhel50_gcc48x
+setenv CADHOME /opt/cadence
+setenv CDS_LIC_FILE /opt/cadence/IC617/share/license/license.dat
+setenv TERM xterm
+setenv CDS_AUTO_64BIT ALL
+setenv CADENCE_DIR /opt/cadence/IC617
+setenv SHLVL 1
+setenv CDSROOT /opt/cadence/IC617
+setenv CDS /opt/cadence/IC617
+setenv MGC_PDF_READER evince
+setenv MOZILLA_HOME /usr/bin/firefox
+setenv CDS_LOAD_ENV CWD
+setenv SYSTEM_CDS_LIB_DIR /opt/cadence/IC617/share/cdssetup
+
+prepend-path CDS_LIC_FILE /opt/cadence/IC617/share/license/license.dat
+
+# Module description
+module-whatis "Environment module for Virtuoso tools"

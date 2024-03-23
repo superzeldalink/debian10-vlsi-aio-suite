@@ -28,7 +28,7 @@ RUN echo 'PermitRootLogin Yes' >> /etc/ssh/sshd_config \
     && echo 'X11DisplayOffset 10' >> /etc/ssh/sshd_config \
     && echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
 
-RUN apt install -y --no-install-recommends gcc cmake make libc6-dev g++
+RUN apt install -y --no-install-recommends gcc gcc-multilib cmake make libc6-dev g++ csh ksh
 
 # Install additional utilities and locales
 RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
@@ -49,7 +49,7 @@ RUN mkdir -p /usr/local/flexlm/licenses/ \
     && mkdir -p /usr/tmp/.flexlm
 
 # Install dependencies
-RUN apt install -y libncurses5 libmng1 csh dc \
+RUN apt install -y libncurses5 libmng1 dc \
     libstdc++6 libxss1 libxt6 libxmu6 libnuma1 libxi6 libxrandr2 libtiff5 libgl1
 
 # Copy Synopsys license file and daemons
@@ -197,6 +197,9 @@ RUN if [ "${TARGETARCH}" = "mac" ]; then \
 # INSTALL oss-cad-suite
 RUN apt install -y zlib1g-dev ghostscript
 
+### Innovus patch
+RUN ln -s /usr/lib/x86_64-linux-gnu/libXpm.so.4.11.0 /usr/lib/x86_64-linux-gnu/libXp.so.6
+
 ######### FINALIZE
 # Ultilities
 RUN apt install -y gpicview xarchiver iputils-ping clang
@@ -240,6 +243,10 @@ ARG BUILD_NUMBER=0
 COPY frontend/info /bin
 COPY info_autostart.desktop /etc/xdg/autostart
 RUN chmod +x /bin/info
+
+# Add script for restarting Synopsys LM
+COPY frontend/syn_lm_restart /bin
+RUN chmod +x /bin/syn_lm_restart
 
 RUN sed -i "s/;;VERSION/$VERSION/" /bin/info \
     && sed -i "s/;;BUILD_NUMBER/$BUILD_NUMBER/" /bin/info \

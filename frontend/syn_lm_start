@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Check if the current user is root or in the sudoers list
+if [ "$(whoami)" != "root" ] && [ "$(sudo -n -l -U "$(whoami)" 2>&1 | grep -c "may run")" -eq 0 ]; then
+    echo "Only root or users in the sudoers list can run this script."
+    exit 1
+fi
+
+# Define the command to start lmgrd
+lmgrd_command="/usr/synopsys/11.9/amd64/bin/lmgrd -c /usr/local/flexlm/licenses/license.dat -l /root/startup_run.log"
+
+# Check if lmgrd process is already running
+if pgrep -x "lmgrd" >/dev/null; then
+    echo "lmgrd is already running."
+else
+    # Start lmgrd
+    echo "Starting lmgrd..."
+    # Execute the lmgrd command
+    $lmgrd_command &
+    echo "lmgrd started."
+fi

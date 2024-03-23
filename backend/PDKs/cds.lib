@@ -24,3 +24,5 @@ DEFINE tsmcN65 /opt/PDKs/TSMCn65/tsmcN65/
 DEFINE tsmc18rf /opt/PDKs/tsmc18/tsmc18rf/tsmc18rf
 DEFINE tsmc13rf /opt/PDKs/tsmc13/tsmc13rf
 DEFINE tsmc18 /opt/PDKs/Full_Flow_Lab_Lib_TSMC180_New/tsmc18
+DEFINE SAED_PDK_14 /opt/PDKs/SAED14nm/SAED14_PDK/SAED_PDK_14
+DEFINE SAED_PDK_32_28 /opt/PDKs/SAED32nm/SAED_PDK_32_28

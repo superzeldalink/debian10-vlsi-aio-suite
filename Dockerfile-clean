@@ -4,7 +4,10 @@ FROM amd64/debian:buster-20230919-slim
 ENV DEBIAN_FRONTEND noninteractive
 
 ### COMMON
-ADD frontend/vivado.tgz /tools
+ADD backend/cadence.tgz /opt
+ADD frontend/xcelium.tgz /opt/cadence
+ADD frontend/genus.tgz /opt/cadence
+ADD frontend/innovus.tgz /opt/cadence
 
 RUN dpkg --add-architecture amd64 \
     && dpkg --add-architecture i386
@@ -23,7 +26,7 @@ RUN echo 'PermitRootLogin Yes' >> /etc/ssh/sshd_config \
     && echo 'X11DisplayOffset 10' >> /etc/ssh/sshd_config \
     && echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
 
-RUN apt install -y --no-install-recommends gcc cmake make libc6-dev g++
+RUN apt install -y --no-install-recommends gcc gcc-multilib cmake make libc6-dev g++ csh ksh
 
 # Install additional utilities and locales
 RUN echo "export TZ=Asia/Ho_Chi_Minh" > /etc/profile.d/env.sh
@@ -34,10 +37,15 @@ RUN apt install -y --no-install-recommends htop nano vim neovim tree locales mou
 RUN rm -f /usr/bin/sh && ln -s /usr/bin/bash /usr/bin/sh \
     && rm -f /bin/sh && ln -s /bin/bash /bin/sh
 
-### INSTALL VIVADO
-RUN apt install -y libtinfo5 libxtst6 libasound2 libcom-err2 libkeyutils1 libpulse0 libqt5webenginewidgets5
-RUN mkdir /root/.Xilinx        
-COPY frontend/license.lic /root/.Xilinx
+### Patches
+COPY frontend/libpng12.so.0.54.0 /usr/lib
+RUN ln -s /usr/lib/libpng12.so.0.54.0 /usr/lib/libpng12.so.0 \
+    && ln -s /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3 \
+    && ln -s /usr/lib/x86_64-linux-gnu/libtiff.so.5 /usr/lib/x86_64-linux-gnu/libtiff.so.3
+
+### Innovus patch
+RUN apt install -y libncurses5
+RUN ln -s /usr/lib/x86_64-linux-gnu/libXpm.so.4.11.0 /usr/lib/x86_64-linux-gnu/libXp.so.6
 
 # Add modules
 COPY frontend/modules /usr/share/modules/modulefiles
@@ -73,6 +81,10 @@ ARG BUILD_NUMBER=0
 COPY info /bin
 COPY info_autostart.desktop /etc/xdg/autostart
 RUN chmod +x /bin/info
+
+# Add script for restarting Synopsys LM
+COPY frontend/syn_lm_restart /bin
+RUN chmod +x /bin/syn_lm_restart
 
 RUN sed -i "s/;;VERSION/$VERSION/" /bin/info \
     && sed -i "s/;;BUILD_NUMBER/$BUILD_NUMBER/" /bin/info \
